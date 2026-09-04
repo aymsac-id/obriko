@@ -1,0 +1,26 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff6b52" />
+      <stop offset="1" stop-color="#e8432e" />
+    </linearGradient>
+  </defs>
+  <path d="M32 3C18.75 3 8 13.6 8 26.6c0 15.8 24 34.4 24 34.4s24-18.6 24-34.4C56 13.6 45.25 3 32 3Z" fill="url(#g)" />
+  <circle cx="32" cy="26.5" r="15.5" fill="#17181b" />
+  <rect x="30.4" y="3" width="3.2" height="9" fill="#17181b" />
+  <path d="M32 15.5c-5.6 0-10.1 4.3-10.6 9.8h21.2C42.1 19.8 37.6 15.5 32 15.5Z" fill="url(#g)" />
+  <rect x="19.8" y="24.6" width="24.4" height="3.4" rx="1.7" fill="url(#g)" />
+  <rect x="30.2" y="11" width="3.6" height="6" rx="1.8" fill="url(#g)" />
+  <g fill="#726a63">
+    <circle cx="23.5" cy="34" r="2.6" />
+    <path d="M18.5 43.5c0-3 2.2-5.4 5-5.4s5 2.4 5 5.4v1h-10v-1Z" />
+  </g>
+  <g fill="#726a63">
+    <circle cx="40.5" cy="34" r="2.6" />
+    <path d="M35.5 43.5c0-3 2.2-5.4 5-5.4s5 2.4 5 5.4v1h-10v-1Z" />
+  </g>
+  <g fill="url(#g)">
+    <circle cx="32" cy="32.5" r="3.1" />
+    <path d="M26.2 43.5c0-3.5 2.6-6.3 5.8-6.3s5.8 2.8 5.8 6.3v1H26.2v-1Z" />
+  </g>
+</svg>

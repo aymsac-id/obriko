@@ -1,0 +1,44 @@
+/* Tokens de la landing de Obriko — tematizados desde FICHA-ARTE.md
+   Reconstruido tras una falla de disco que borró el archivo original;
+   los valores son idénticos a los documentados en FICHA-ARTE.md. */
+
+:root {
+  --bg: #17181b;
+  /* --surface/--surface-2 subidos en la auditoría 2ª ronda (2026-09-03): revisor-visual marcó
+     "profundidad casi plana" en onboarding/paywall/Buscar (bg y surface se leían casi del mismo
+     tono). Se sube la luminosidad manteniendo la MISMA familia neutra cálida (bg no cambia, es
+     cosa juzgada de FICHA-ARTE.md) para que los 3 niveles base/elevado/hundido se distingan. */
+  --surface: #282422;
+  --surface-2: #38312c;
+
+  --text-primary: #f3efe9;
+  --text-secondary: #a89f97;
+  --text-tertiary: #726a63;
+
+  --accent: #e8432e;
+  --accent-2: #ff6b52;
+  --chip-bg: rgb(232 67 46 / 14%);
+
+  --success: #5aa876;
+  --warning: #d99a3e;
+  --danger: #b5392a;
+
+  --radius-card: 14px;
+  --radius-button: 8px;
+  --radius-sheet: 20px;
+
+  /* Escala tipográfica (14: jerarquía por tamaño) — valores usados en toda la app interna,
+     promovidos a token para que las pantallas nuevas los referencien sin números mágicos. */
+  --text-page-title: 26px;
+  --text-sheet-title: 19px;
+  --text-subtitle: 17px;
+  --text-body: 15px;
+  --text-small: 13px;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-2: 0 20px 50px -20px rgb(0 0 0 / 60%);
+
+  --font-display: var(--font-archivo-black), "Arial Black", sans-serif;
+  --font-body: var(--font-inter), -apple-system, "Segoe UI", sans-serif;
+  --font-heading-name: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+}
