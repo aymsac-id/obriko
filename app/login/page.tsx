@@ -9,7 +9,7 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Loader2, Lock, Mail } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import { FunnelHeader, PrimaryCta, StepFooter, useStepReveal } from '@/components/onboarding/ui';
 import { crearClienteSupabase } from '@/lib/supabase/client';
 
@@ -18,6 +18,7 @@ export default function LoginPage() {
   const [modo, setModo] = useState<'crear' | 'entrar'>('crear');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [mostrarPassword, setMostrarPassword] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [revisaCorreo, setRevisaCorreo] = useState(false);
@@ -120,13 +121,21 @@ export default function LoginPage() {
               <div className="flex h-14 items-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_35%,transparent)] bg-[var(--surface)] px-4">
                 <Lock size={18} color="var(--text-tertiary)" aria-hidden="true" />
                 <input
-                  type="password"
+                  type={mostrarPassword ? 'text' : 'password'}
                   autoComplete={modo === 'crear' ? 'new-password' : 'current-password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
                   className="h-full w-full bg-transparent text-base text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)]"
                 />
+                <button
+                  type="button"
+                  onClick={() => setMostrarPassword((v) => !v)}
+                  aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  className="shrink-0 text-[var(--text-tertiary)]"
+                >
+                  {mostrarPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                </button>
               </div>
             </label>
 
