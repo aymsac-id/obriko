@@ -86,6 +86,11 @@ export default function DisponibilidadPublicaPage() {
       // y avisar: el trabajador no debe irse pensando que ya quedó marcado.
       setDisponibilidad((prev) => ({ ...prev, [dia.iso]: anterior }));
       setErrorGuardado('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
+    } else {
+      supabase.rpc('log_evento', { p_tipo: 'disponibilidad_marcada_publica', p_empresa_id: null, p_metadata: {} }).then(
+        () => {},
+        () => {}
+      );
     }
     setGuardando(null);
   }

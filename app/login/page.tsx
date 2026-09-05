@@ -12,6 +12,7 @@ import { motion } from 'motion/react';
 import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import { FunnelHeader, PrimaryCta, StepFooter, useStepReveal } from '@/components/onboarding/ui';
 import { crearClienteSupabase } from '@/lib/supabase/client';
+import { logEvento } from '@/lib/data/logging';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -62,6 +63,10 @@ export default function LoginPage() {
       // sesión, y ahí migrarImportacionDeOnboarding sube lo que importó en el onboarding.
       setRevisaCorreo(true);
       return;
+    }
+    if (modo === 'crear' && data.session) {
+      const { data: empresa } = await supabase.from('empresas').select('id').maybeSingle();
+      logEvento('cuenta_creada', empresa?.id ?? null);
     }
     router.push('/app');
     router.refresh();

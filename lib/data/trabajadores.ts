@@ -6,6 +6,7 @@
 import { crearClienteSupabase } from '@/lib/supabase/client';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { leerEstadoOnboarding, guardarEstadoOnboarding } from '@/lib/onboarding-storage';
+import { logEvento } from '@/lib/data/logging';
 
 export type Oficio = string;
 export type EstadoDisponibilidad = 'disponible' | 'ocupado' | 'consultar';
@@ -139,9 +140,15 @@ export interface NuevoTrabajadorInput {
   origen?: 'importado' | 'manual';
 }
 
+async function eraLibretaVacia(supabase: SupabaseClient, empresaId: string): Promise<boolean> {
+  const { count } = await supabase.from('trabajadores').select('id', { count: 'exact', head: true }).eq('empresa_id', empresaId);
+  return (count ?? 0) === 0;
+}
+
 export async function addTrabajador(input: NuevoTrabajadorInput): Promise<Trabajador> {
   const supabase = crearClienteSupabase();
   const empresaId = await getEmpresaId(supabase);
+  const eraPrimero = await eraLibretaVacia(supabase, empresaId);
   const { data, error } = await supabase
     .from('trabajadores')
     .insert({
@@ -156,6 +163,7 @@ export async function addTrabajador(input: NuevoTrabajadorInput): Promise<Trabaj
     .select(SELECT_TRABAJADOR)
     .single();
   if (error) throw error;
+  if (eraPrimero) logEvento('primer_trabajador_agregado', empresaId);
   return filaATrabajador(data as unknown as FilaTrabajador);
 }
 
@@ -164,6 +172,7 @@ export async function addTrabajadoresEnLote(inputs: NuevoTrabajadorInput[]): Pro
   if (inputs.length === 0) return [];
   const supabase = crearClienteSupabase();
   const empresaId = await getEmpresaId(supabase);
+  const eraPrimero = await eraLibretaVacia(supabase, empresaId);
   const filas = inputs.map((input) => ({
     empresa_id: empresaId,
     nombre: input.nombre,
@@ -175,6 +184,7 @@ export async function addTrabajadoresEnLote(inputs: NuevoTrabajadorInput[]): Pro
   }));
   const { data, error } = await supabase.from('trabajadores').insert(filas).select(SELECT_TRABAJADOR);
   if (error) throw error;
+  if (eraPrimero) logEvento('primer_trabajador_agregado', empresaId);
   return ((data ?? []) as unknown as FilaTrabajador[]).map(filaATrabajador);
 }
 
@@ -202,6 +212,8 @@ export async function setDisponibilidad(id: string, fechaIso: string, estado: Es
     .from('disponibilidad')
     .upsert({ trabajador_id: id, fecha: fechaIso, estado }, { onConflict: 'trabajador_id,fecha' });
   if (error) throw error;
+  const { data: fila } = await supabase.from('trabajadores').select('empresa_id').eq('id', id).maybeSingle();
+  logEvento('disponibilidad_marcada_manual', fila?.empresa_id ?? null);
 }
 
 export interface NuevaEvaluacionInput {
@@ -235,6 +247,9 @@ export async function addEvaluacion(id: string, input: NuevaEvaluacionInput): Pr
     .update({ confiabilidad, obras_juntos: actual.obrasJuntos + 1 })
     .eq('id', id);
   if (errorUpdate) throw errorUpdate;
+
+  const { data: fila } = await supabase.from('trabajadores').select('empresa_id').eq('id', id).maybeSingle();
+  logEvento('evaluacion_registrada', fila?.empresa_id ?? null);
 
   return getTrabajadorPorId(id);
 }

@@ -16,8 +16,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getTrabajadores, migrarImportacionDeOnboarding, type Oficio, type Trabajador } from '@/lib/data/trabajadores';
 import { getRecordatorio } from '@/lib/data/empresa';
 import { getProximosDias } from '@/lib/data/fechas';
+import { crearClienteSupabase } from '@/lib/supabase/client';
+import { logEvento } from '@/lib/data/logging';
 
 const RECORDATORIO_VISTO_KEY = 'obriko_recordatorio_visto_v1';
+const SESION_REGISTRADA_KEY = 'obriko_sesion_registrada_v1';
 
 function hoyIso(): string {
   const d = new Date();
@@ -59,6 +62,22 @@ export default function BuscarPage() {
       .catch(() => {
         // sin recordatorio configurado o falló la carga — no bloquea la pantalla
       });
+
+    // "sesión abierta" una vez por día — es la base real de la retención D1/D7/D30 del panel
+    // de administración: sin este evento no hay forma honesta de medir si alguien vuelve.
+    if (window.localStorage.getItem(SESION_REGISTRADA_KEY) !== hoyIso()) {
+      (async () => {
+        try {
+          const { data } = await crearClienteSupabase().from('empresas').select('id').maybeSingle();
+          if (data?.id) {
+            await logEvento('sesion_abierta', data.id);
+            window.localStorage.setItem(SESION_REGISTRADA_KEY, hoyIso());
+          }
+        } catch {
+          // medir uso no debe romper la pantalla
+        }
+      })();
+    }
   }, []);
 
   function descartarRecordatorio() {
