@@ -36,7 +36,9 @@ interface FilaPublica {
 export default function DisponibilidadPublicaPage() {
   const params = useParams<{ token: string }>();
   const token = Array.isArray(params.token) ? params.token[0] : params.token;
-  const dias = getProximosDias(7);
+  // 30 días en vez de 7 (pedido del usuario): que la persona marque todo un mes de una vez, en
+  // lugar de tener que volver a pedirle disponibilidad cada semana.
+  const dias = getProximosDias(30);
   const [estado, setEstado] = useState<'cargando' | 'invalido' | 'listo'>('cargando');
   const [nombre, setNombre] = useState('');
   const [oficio, setOficio] = useState('');
@@ -110,7 +112,7 @@ export default function DisponibilidadPublicaPage() {
             Hola, {nombre.split(' ')[0]}
           </h1>
           <p className="mt-1.5 text-center text-[14px] text-[var(--text-secondary)]">
-            {oficio} · Marca los días en que puedes trabajar esta semana
+            {oficio} · Marca los días en que puedes trabajar este mes
           </p>
 
           {errorGuardado ? (
@@ -120,13 +122,17 @@ export default function DisponibilidadPublicaPage() {
           ) : null}
 
           <div className="mt-6 flex flex-col gap-2">
-            {dias.map((d) => {
+            {dias.map((d, i) => {
               const actual = disponibilidad[d.iso] ?? 'consultar';
+              const mesCambio = i > 0 && d.mesCorto !== dias[i - 1]?.mesCorto;
               return (
-                <div
-                  key={d.iso}
-                  className="flex items-center justify-between rounded-[var(--radius-card)] bg-[var(--surface)] px-4 py-3"
-                >
+                <div key={d.iso}>
+                  {mesCambio ? (
+                    <p className="mb-2 mt-3 px-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)]">
+                      {d.mesCorto}
+                    </p>
+                  ) : null}
+                  <div className="flex items-center justify-between rounded-[var(--radius-card)] bg-[var(--surface)] px-4 py-3">
                   <div>
                     <p className="text-[14px] font-semibold">
                       {d.esHoy ? 'Hoy' : d.diaCorto} · {d.diaNumero} {d.mesCorto}
@@ -154,6 +160,7 @@ export default function DisponibilidadPublicaPage() {
                         </button>
                       );
                     })}
+                  </div>
                   </div>
                 </div>
               );
