@@ -3,7 +3,7 @@
 // supabase/migrations/0001_init.sql).
 
 import { crearClienteSupabase } from '@/lib/supabase/client';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { getEmpresaId } from '@/lib/data/empresa';
 
 export type EstadoProyecto = 'activo' | 'pausado' | 'terminado';
 
@@ -41,19 +41,13 @@ function filaAProyecto(fila: FilaProyecto): Proyecto {
   };
 }
 
-async function getEmpresaId(supabase: SupabaseClient): Promise<string> {
-  const { data, error } = await supabase.from('empresas').select('id').maybeSingle();
-  if (error || !data) {
-    throw new Error('No encontramos tu empresa. Cierra sesión y vuelve a entrar.');
-  }
-  return data.id as string;
-}
-
 export async function getProyectos(): Promise<Proyecto[]> {
   const supabase = crearClienteSupabase();
+  const empresaId = await getEmpresaId(supabase);
   const { data, error } = await supabase
     .from('proyectos')
     .select(SELECT_PROYECTO)
+    .eq('empresa_id', empresaId)
     .order('creado_en', { ascending: false });
   if (error) throw error;
   return ((data ?? []) as unknown as FilaProyecto[]).map(filaAProyecto);
@@ -61,7 +55,13 @@ export async function getProyectos(): Promise<Proyecto[]> {
 
 export async function getProyectoPorId(id: string): Promise<Proyecto | undefined> {
   const supabase = crearClienteSupabase();
-  const { data, error } = await supabase.from('proyectos').select(SELECT_PROYECTO).eq('id', id).maybeSingle();
+  const empresaId = await getEmpresaId(supabase);
+  const { data, error } = await supabase
+    .from('proyectos')
+    .select(SELECT_PROYECTO)
+    .eq('id', id)
+    .eq('empresa_id', empresaId)
+    .maybeSingle();
   if (error) throw error;
   return data ? filaAProyecto(data as unknown as FilaProyecto) : undefined;
 }

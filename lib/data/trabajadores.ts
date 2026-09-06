@@ -7,6 +7,7 @@ import { crearClienteSupabase } from '@/lib/supabase/client';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { leerEstadoOnboarding, guardarEstadoOnboarding } from '@/lib/onboarding-storage';
 import { logEvento } from '@/lib/data/logging';
+import { getEmpresaId } from '@/lib/data/empresa';
 
 export type Oficio = string;
 export type EstadoDisponibilidad = 'disponible' | 'ocupado' | 'consultar';
@@ -106,19 +107,13 @@ function filaATrabajador(fila: FilaTrabajador): Trabajador {
 
 const SELECT_TRABAJADOR = '*, evaluaciones(*), disponibilidad(fecha, estado)';
 
-async function getEmpresaId(supabase: SupabaseClient): Promise<string> {
-  const { data, error } = await supabase.from('empresas').select('id').maybeSingle();
-  if (error || !data) {
-    throw new Error('No encontramos tu empresa. Cierra sesión y vuelve a entrar.');
-  }
-  return data.id as string;
-}
-
 export async function getTrabajadores(): Promise<Trabajador[]> {
   const supabase = crearClienteSupabase();
+  const empresaId = await getEmpresaId(supabase);
   const { data, error } = await supabase
     .from('trabajadores')
     .select(SELECT_TRABAJADOR)
+    .eq('empresa_id', empresaId)
     .order('creado_en', { ascending: false });
   if (error) throw error;
   return ((data ?? []) as unknown as FilaTrabajador[]).map(filaATrabajador);
@@ -126,7 +121,13 @@ export async function getTrabajadores(): Promise<Trabajador[]> {
 
 export async function getTrabajadorPorId(id: string): Promise<Trabajador | undefined> {
   const supabase = crearClienteSupabase();
-  const { data, error } = await supabase.from('trabajadores').select(SELECT_TRABAJADOR).eq('id', id).maybeSingle();
+  const empresaId = await getEmpresaId(supabase);
+  const { data, error } = await supabase
+    .from('trabajadores')
+    .select(SELECT_TRABAJADOR)
+    .eq('id', id)
+    .eq('empresa_id', empresaId)
+    .maybeSingle();
   if (error) throw error;
   return data ? filaATrabajador(data as unknown as FilaTrabajador) : undefined;
 }
