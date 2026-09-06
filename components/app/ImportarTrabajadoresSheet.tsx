@@ -17,6 +17,7 @@ import {
   CircleCheck,
   Contact as ContactIcon,
   FileSpreadsheet,
+  IdCard,
   Loader2,
   Lock,
   Plus,
@@ -33,6 +34,7 @@ import {
   detectarOficio,
   normalizarTelefono,
   parseArchivoImportacion,
+  parseArchivoVCard,
   type ArchivoParseado,
   type CampoDestino,
 } from '@/lib/import/parseArchivo';
@@ -102,6 +104,7 @@ export default function ImportarTrabajadoresSheet({ modo, abierto = true, onCerr
   const [importando, setImportando] = useState(false);
   const [tieneContactPicker, setTieneContactPicker] = useState(false);
   const inputArchivoRef = useRef<HTMLInputElement>(null);
+  const inputVCardRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setTieneContactPicker(contactPickerDisponible());
@@ -180,6 +183,35 @@ export default function ImportarTrabajadoresSheet({ modo, abierto = true, onCerr
     }
   }
 
+  /** Reemplazo real del Contact Picker para iPhone y escritorio (ninguno de los dos tiene ese
+   * API): el usuario exporta 1 o varios contactos como tarjeta (.vcf) desde su propia app de
+   * Contactos — "Compartir contacto" → Guardar en Archivos — y la sube aquí. Cero tipeo. */
+  async function onVCardElegido(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setErrorGeneral(null);
+    try {
+      const contactos = await parseArchivoVCard(file);
+      const nuevasFilas: FilaImportacion[] = contactos.map((c, i) => ({
+        key: `vcard-${i}`,
+        nombre: c.nombre,
+        telefono: c.telefono,
+        oficio: '',
+        tarifaDia: '',
+        ubicacion: '',
+      }));
+      setFilas(nuevasFilas);
+      setPaso('previsualizar');
+    } catch (err) {
+      setErrorGeneral(
+        err instanceof ArchivoInvalidoError
+          ? err.message
+          : 'No pudimos leer esa tarjeta de contacto. Intenta de nuevo.'
+      );
+    }
+  }
+
   function filaVacia(): FilaImportacion {
     return { key: `manual-${Date.now()}-${Math.round(Math.random() * 1e6)}`, nombre: '', telefono: '', oficio: '', tarifaDia: '', ubicacion: '' };
   }
@@ -255,6 +287,13 @@ export default function ImportarTrabajadoresSheet({ modo, abierto = true, onCerr
               className="sr-only"
               onChange={onArchivoElegido}
             />
+            <input
+              ref={inputVCardRef}
+              type="file"
+              accept=".vcf,text/vcard,text/x-vcard"
+              className="sr-only"
+              onChange={onVCardElegido}
+            />
 
             {tieneContactPicker ? (
               <button
@@ -278,6 +317,22 @@ export default function ImportarTrabajadoresSheet({ modo, abierto = true, onCerr
                 </span>
               </button>
             ) : null}
+
+            <button
+              type="button"
+              onClick={() => inputVCardRef.current?.click()}
+              className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-tertiary)_28%,transparent)] bg-[var(--surface)] px-4 py-4 text-left transition-colors [touch-action:manipulation] hover:bg-[var(--surface-2)]"
+            >
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-button)] bg-[var(--chip-bg)]">
+                <IdCard size={22} color="var(--accent)" aria-hidden="true" />
+              </span>
+              <span>
+                <span className="block text-[length:var(--text-body)] font-semibold">Subir tarjeta de contacto (.vcf)</span>
+                <span className="block text-[length:var(--text-small)] text-[var(--text-secondary)]">
+                  En Contactos de tu celular: elige uno o varios → Compartir → Guardar archivo
+                </span>
+              </span>
+            </button>
 
             <button
               type="button"

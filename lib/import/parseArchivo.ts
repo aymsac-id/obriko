@@ -57,6 +57,67 @@ export function normalizarTelefono(texto: string): string {
   return digitos;
 }
 
+export interface ContactoVCard {
+  nombre: string;
+  telefono: string;
+}
+
+/** Desdobla y separa un texto .vcf en sus tarjetas, extrayendo nombre + celular de cada una.
+ * Es el reemplazo real del Contact Picker en dispositivos donde ese API no existe (todo iPhone,
+ * cualquier navegador de escritorio): el usuario exporta 1 o varios contactos como archivo desde
+ * su propia app de Contactos y lo sube aquí — cero tipeo, igual que el selector de Android. */
+export function parseVCard(texto: string): ContactoVCard[] {
+  // Las líneas largas de un vCard pueden venir "plegadas" (continúan en la siguiente línea si
+  // esta empieza con espacio o tab) — se desdobla antes de separar tarjeta por tarjeta.
+  const desdoblado = texto.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '');
+  const bloques = desdoblado.split(/BEGIN:VCARD/i).slice(1);
+  const contactos: ContactoVCard[] = [];
+  for (const bloque of bloques) {
+    const lineas = bloque.split('\n').map((l) => l.trim()).filter(Boolean);
+    let nombre = '';
+    let telefono = '';
+    let telefonoCelular = '';
+    for (const linea of lineas) {
+      const idx = linea.indexOf(':');
+      if (idx === -1) continue;
+      const clave = linea.slice(0, idx);
+      const valor = linea.slice(idx + 1).trim();
+      if (!valor) continue;
+      const claveBase = clave.split(';')[0].toUpperCase();
+      if (claveBase === 'FN' && !nombre) {
+        nombre = valor;
+      } else if (claveBase === 'N' && !nombre) {
+        // N: Apellidos;Nombre;SegundoNombre;Prefijo;Sufijo — se arma "Nombre Apellidos".
+        const partes = valor.split(';').filter(Boolean);
+        nombre = partes.slice(0, 2).reverse().join(' ').trim();
+      } else if (claveBase === 'TEL') {
+        const numero = normalizarTelefono(valor);
+        if (!numero) continue;
+        if (!telefono) telefono = numero;
+        if (!telefonoCelular && /CELL|MOBILE|CEL\b/i.test(clave)) telefonoCelular = numero;
+      }
+    }
+    const telefonoFinal = telefonoCelular || telefono;
+    if (nombre || telefonoFinal) contactos.push({ nombre, telefono: telefonoFinal });
+  }
+  return contactos;
+}
+
+/** Lee un archivo .vcf (una o varias tarjetas de contacto) y devuelve nombre + celular de cada una. */
+export async function parseArchivoVCard(file: File): Promise<ContactoVCard[]> {
+  if (file.size === 0) {
+    throw new ArchivoInvalidoError('El archivo está vacío.');
+  }
+  const texto = await file.text();
+  const contactos = parseVCard(texto);
+  if (contactos.length === 0) {
+    throw new ArchivoInvalidoError(
+      'No encontramos ningún contacto ahí. Verifica que sea una tarjeta de contacto (.vcf) válida.'
+    );
+  }
+  return contactos;
+}
+
 /** Lee un File (.xlsx/.xls/.csv) y devuelve encabezados + filas crudas como texto. */
 export async function parseArchivoImportacion(file: File): Promise<ArchivoParseado> {
   if (file.size === 0) {
