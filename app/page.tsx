@@ -194,7 +194,7 @@ export default function LandingObriko() {
       <FooterLegal
         appName=""
         logo={<BrandLockup size={26} />}
-        soporteEmail="soporte@obriko.com"
+        soporteEmail="josskgp@gmail.com"
         enlaces={[
           { label: 'Privacidad', href: '/privacidad' },
           { label: 'Términos y Condiciones', href: '/terminos' },

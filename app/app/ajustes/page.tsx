@@ -10,6 +10,7 @@ import { Bell, FileText, LogOut, ShieldCheck, Trash2 } from 'lucide-react';
 import { getTrabajadores } from '@/lib/data/trabajadores';
 import { getPlanEmpresa, getRecordatorio, setRecordatorio, type Recordatorio } from '@/lib/data/empresa';
 import { crearClienteSupabase } from '@/lib/supabase/client';
+import { eliminarCuentaAction } from './actions';
 
 const DIAS = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
 const HORAS = Array.from({ length: 24 }, (_, h) => h);
@@ -68,18 +69,21 @@ export default function AjustesPage() {
 
   async function eliminarCuenta() {
     const ok = window.confirm(
-      'Esto borra tu libreta de trabajadores y tus proyectos para siempre. No se puede deshacer. ¿Continuar?'
+      'Esto borra tu libreta de trabajadores, tus proyectos y tu cuenta de acceso para siempre. No se puede deshacer. ¿Continuar?'
     );
     if (!ok) return;
     setEliminando(true);
-    const supabase = crearClienteSupabase();
     try {
-      const { data: empresa } = await supabase.from('empresas').select('id').maybeSingle();
-      if (empresa) {
-        await supabase.from('empresas').delete().eq('id', empresa.id);
+      const resultado = await eliminarCuentaAction();
+      if (!resultado.ok) {
+        setEliminando(false);
+        window.alert(resultado.mensaje);
+        return;
       }
       for (const clave of CLAVES_LOCALSTORAGE) window.localStorage.removeItem(clave);
+      const supabase = crearClienteSupabase();
       await supabase.auth.signOut();
+      window.alert(resultado.mensaje);
       router.push('/');
     } catch {
       setEliminando(false);

@@ -23,6 +23,9 @@ export default function LoginPage() {
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [revisaCorreo, setRevisaCorreo] = useState(false);
+  // Consentimiento explícito al registrar (47-LEGAL-FISCAL-Y-PRIVACIDAD.md §2): checkbox NO
+  // premarcado, obligatorio solo al CREAR cuenta (no al entrar a una ya existente).
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const { contenedor, item } = useStepReveal(0.08);
 
   async function handleSubmit(e: FormEvent) {
@@ -34,6 +37,10 @@ export default function LoginPage() {
     }
     if (password.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+    if (modo === 'crear' && !aceptaTerminos) {
+      setError('Acepta los Términos y la Política de Privacidad para continuar.');
       return;
     }
     setEnviando(true);
@@ -153,6 +160,28 @@ export default function LoginPage() {
               </Link>
             ) : null}
 
+            {modo === 'crear' ? (
+              <label className="flex items-start gap-2.5 text-[13px] text-[var(--text-secondary)]">
+                <input
+                  type="checkbox"
+                  checked={aceptaTerminos}
+                  onChange={(e) => setAceptaTerminos(e.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]"
+                />
+                <span>
+                  Al crear tu cuenta aceptas los{' '}
+                  <Link href="/terminos" className="font-medium text-[var(--accent)] underline-offset-4 hover:underline">
+                    Términos
+                  </Link>{' '}
+                  y la{' '}
+                  <Link href="/privacidad" className="font-medium text-[var(--accent)] underline-offset-4 hover:underline">
+                    Política de Privacidad
+                  </Link>
+                  .
+                </span>
+              </label>
+            ) : null}
+
             {error ? (
               <p role="alert" className="text-sm text-[var(--danger)]">
                 {error}
@@ -204,7 +233,7 @@ export default function LoginPage() {
       </div>
       <StepFooter>
         <p className="text-center text-[12px] text-[var(--text-tertiary)]">
-          Tus datos están protegidos y no se comparten con nadie.
+          Tu libreta es privada — nunca la vendemos ni la publicamos.
         </p>
       </StepFooter>
     </div>
