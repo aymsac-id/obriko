@@ -34,6 +34,10 @@ export default function CalificarSheet({
   // Micro-celebración de la "inversión" del loop de retención (ESTADO.md): tras guardar,
   // se muestra cuánto subió (o bajó) la confiabilidad antes de cerrar la ficha.
   const [resultado, setResultado] = useState<number | null>(null);
+  // Bug real corregido (2026-09-06): sin este guard, un doble-toque en "Guardar calificación"
+  // mandaba la misma calificación dos veces (2 filas reales en `evaluaciones`, confiabilidad
+  // inflada al doble) porque el botón seguía habilitado mientras la primera petición viajaba.
+  const [guardando, setGuardando] = useState(false);
 
   function limpiar() {
     setObra('');
@@ -43,14 +47,17 @@ export default function CalificarSheet({
     setComentario('');
     setError(null);
     setResultado(null);
+    setGuardando(false);
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (guardando) return;
     if (!calidad || !puntualidad || recomendaria === null) {
       setError('Completa calidad, puntualidad y si lo recomendarías.');
       return;
     }
+    setGuardando(true);
     try {
       const actualizado = await addEvaluacion(trabajadorId, {
         obra: obra.trim() || 'Obra sin nombre',
@@ -63,6 +70,7 @@ export default function CalificarSheet({
       setResultado(actualizado ? actualizado.confiabilidad : confiabilidadActual);
     } catch {
       setError('No pudimos guardar la calificación. Intenta de nuevo.');
+      setGuardando(false);
     }
   }
 
@@ -202,9 +210,10 @@ export default function CalificarSheet({
               ) : null}
               <button
                 type="submit"
-                className="flex h-12 w-full items-center justify-center rounded-[var(--radius-button)] bg-[var(--accent)] text-[15px] font-semibold text-[var(--bg)]"
+                disabled={guardando}
+                className="flex h-12 w-full items-center justify-center rounded-[var(--radius-button)] bg-[var(--accent)] text-[15px] font-semibold text-[var(--bg)] disabled:opacity-60"
               >
-                Guardar calificación
+                {guardando ? 'Guardando…' : 'Guardar calificación'}
               </button>
                 </form>
               </>
