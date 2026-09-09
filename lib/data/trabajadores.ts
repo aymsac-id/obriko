@@ -18,6 +18,11 @@ export interface Evaluacion {
   obra: string;
   calidad: number; // 1-5
   puntualidad: number; // 1-5
+  /** Nuevos desde 2026-09-10 (pedido del usuario) — nulos en evaluaciones creadas antes. */
+  rendimiento: number | null; // 1-5
+  trabajoEquipo: number | null; // 1-5
+  cumplimiento: number | null; // 1-5
+  seguridad: number | null; // 1-5
   recomendaria: boolean;
   comentario: string;
 }
@@ -68,6 +73,10 @@ interface FilaTrabajador {
     obra: string;
     calidad: number;
     puntualidad: number;
+    rendimiento: number | null;
+    trabajo_equipo: number | null;
+    cumplimiento: number | null;
+    seguridad: number | null;
     recomendaria: boolean;
     comentario: string;
     creado_en: string;
@@ -98,6 +107,10 @@ function filaATrabajador(fila: FilaTrabajador): Trabajador {
         obra: ev.obra,
         calidad: ev.calidad,
         puntualidad: ev.puntualidad,
+        rendimiento: ev.rendimiento,
+        trabajoEquipo: ev.trabajo_equipo,
+        cumplimiento: ev.cumplimiento,
+        seguridad: ev.seguridad,
         recomendaria: ev.recomendaria,
         comentario: ev.comentario,
       }))
@@ -221,16 +234,24 @@ export interface NuevaEvaluacionInput {
   obra: string;
   calidad: number;
   puntualidad: number;
+  rendimiento: number;
+  trabajoEquipo: number;
+  cumplimiento: number;
+  seguridad: number;
   recomendaria: boolean;
   comentario: string;
 }
 
-/** Calificar tras una obra: la "inversión" del loop de retención — mejora la búsqueda de mañana. */
+/** Calificar tras una obra: la "inversión" del loop de retención — mejora la búsqueda de mañana.
+ * Confiabilidad = promedio de los 6 criterios (parejo, sin uno más importante que otro — pedido
+ * directo del usuario de sumar más criterios) con el mismo ajuste por recomendación de siempre. */
 export async function addEvaluacion(id: string, input: NuevaEvaluacionInput): Promise<Trabajador | undefined> {
   const actual = await getTrabajadorPorId(id);
   if (!actual) return undefined;
   const supabase = crearClienteSupabase();
-  const puntajeEvaluacion = ((input.calidad + input.puntualidad) / 2) * 20 - (input.recomendaria ? 0 : 15);
+  const promedioCriterios =
+    (input.calidad + input.puntualidad + input.rendimiento + input.trabajoEquipo + input.cumplimiento + input.seguridad) / 6;
+  const puntajeEvaluacion = promedioCriterios * 20 - (input.recomendaria ? 0 : 15);
   const confiabilidad = Math.round(clamp(actual.confiabilidad * 0.65 + puntajeEvaluacion * 0.35, 10, 99));
 
   const { error: errorEval } = await supabase.from('evaluaciones').insert({
@@ -238,6 +259,10 @@ export async function addEvaluacion(id: string, input: NuevaEvaluacionInput): Pr
     obra: input.obra,
     calidad: input.calidad,
     puntualidad: input.puntualidad,
+    rendimiento: input.rendimiento,
+    trabajo_equipo: input.trabajoEquipo,
+    cumplimiento: input.cumplimiento,
+    seguridad: input.seguridad,
     recomendaria: input.recomendaria,
     comentario: input.comentario,
   });

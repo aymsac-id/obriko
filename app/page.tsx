@@ -165,7 +165,7 @@ export default function LandingJornivo() {
           {
             pregunta: 'No tengo tiempo para registrar y calificar a mi gente.',
             respuestaMarked:
-              'Importas tu libreta en minutos y calificar solo toma 10 segundos después de cada obra.',
+              'Importas tu libreta en minutos y calificar solo toma menos de un minuto después de cada obra.',
           },
           {
             pregunta: '¿Cuánto cuesta y puedo cancelar cuando quiera?',

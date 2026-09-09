@@ -156,7 +156,12 @@ export default function FichaTrabajadorPage() {
                   </p>
                 </div>
                 <p className="mt-1 text-[12.5px] text-[var(--text-secondary)]">
-                  Calidad {ev.calidad}/5 · Puntualidad {ev.puntualidad}/5 ·{' '}
+                  Calidad {ev.calidad}/5 · Puntualidad {ev.puntualidad}/5
+                  {ev.rendimiento ? ` · Rendimiento ${ev.rendimiento}/5` : ''}
+                  {ev.cumplimiento ? ` · Cumplimiento ${ev.cumplimiento}/5` : ''}
+                  {ev.trabajoEquipo ? ` · Trabajo en equipo ${ev.trabajoEquipo}/5` : ''}
+                  {ev.seguridad ? ` · Seguridad ${ev.seguridad}/5` : ''}
+                  {' · '}
                   {ev.recomendaria ? 'Lo recomendaría' : 'No lo recomendaría'}
                 </p>
                 {ev.comentario ? <p className="mt-1 text-[13px] text-[var(--text-primary)]">"{ev.comentario}"</p> : null}

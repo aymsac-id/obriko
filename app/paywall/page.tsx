@@ -21,7 +21,7 @@ import { MarkedCopy } from '@/components/landing/MarkedCopy';
 
 const BENEFICIOS = [
   'Búsqueda instantánea: filtra por oficio y ve quién está libre',
-  'Calificar toma 10 segundos y tu búsqueda de mañana mejora',
+  'Calificar toma menos de un minuto y tu búsqueda de mañana mejora',
   'Marca quién está disponible en segundos, sin llamar a nadie',
 ];
 

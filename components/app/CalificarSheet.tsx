@@ -1,7 +1,8 @@
 'use client';
 
-// Calificar tras una obra — la "inversión" del loop de retención (ESTADO.md): 10 segundos
-// ahora, cuadrillas más precisas mañana. Calidad + puntualidad + ¿la recomendarías?
+// Calificar tras una obra — la "inversión" del loop de retención (ESTADO.md): menos de un
+// minuto ahora, cuadrillas más precisas mañana. 6 criterios (pedido directo del usuario, 2026-
+// 09-10: "2 items me parece poco para valorar a un personal") + ¿la recomendarías?
 
 import { useState, type FormEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -28,6 +29,10 @@ export default function CalificarSheet({
   const [obra, setObra] = useState('');
   const [calidad, setCalidad] = useState(0);
   const [puntualidad, setPuntualidad] = useState(0);
+  const [rendimiento, setRendimiento] = useState(0);
+  const [trabajoEquipo, setTrabajoEquipo] = useState(0);
+  const [cumplimiento, setCumplimiento] = useState(0);
+  const [seguridad, setSeguridad] = useState(0);
   const [recomendaria, setRecomendaria] = useState<boolean | null>(null);
   const [comentario, setComentario] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +48,10 @@ export default function CalificarSheet({
     setObra('');
     setCalidad(0);
     setPuntualidad(0);
+    setRendimiento(0);
+    setTrabajoEquipo(0);
+    setCumplimiento(0);
+    setSeguridad(0);
     setRecomendaria(null);
     setComentario('');
     setError(null);
@@ -53,8 +62,8 @@ export default function CalificarSheet({
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (guardando) return;
-    if (!calidad || !puntualidad || recomendaria === null) {
-      setError('Completa calidad, puntualidad y si lo recomendarías.');
+    if (!calidad || !puntualidad || !rendimiento || !trabajoEquipo || !cumplimiento || !seguridad || recomendaria === null) {
+      setError('Completa los 6 criterios y si lo recomendarías.');
       return;
     }
     setGuardando(true);
@@ -63,6 +72,10 @@ export default function CalificarSheet({
         obra: obra.trim() || 'Obra sin nombre',
         calidad,
         puntualidad,
+        rendimiento,
+        trabajoEquipo,
+        cumplimiento,
+        seguridad,
         recomendaria,
         comentario: comentario.trim(),
       });
@@ -143,12 +156,16 @@ export default function CalificarSheet({
                   </button>
                 </div>
                 <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
-                  10 segundos ahora, cuadrillas más precisas mañana.
+                  Menos de un minuto ahora, cuadrillas más precisas mañana.
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4" noValidate>
               <Estrellas label="Calidad del trabajo" valor={calidad} onChange={setCalidad} />
+              <Estrellas label="Rendimiento" valor={rendimiento} onChange={setRendimiento} />
+              <Estrellas label="Cumplimiento" valor={cumplimiento} onChange={setCumplimiento} />
               <Estrellas label="Puntualidad" valor={puntualidad} onChange={setPuntualidad} />
+              <Estrellas label="Trabajo en equipo" valor={trabajoEquipo} onChange={setTrabajoEquipo} />
+              <Estrellas label="Seguridad en obra" valor={seguridad} onChange={setSeguridad} />
 
               <div>
                 <p className="mb-1.5 text-[13px] font-medium text-[var(--text-secondary)]">
