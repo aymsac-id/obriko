@@ -16,23 +16,23 @@ export default function TerminosPage() {
 
       <div className="mt-8 flex flex-col gap-8 text-base leading-relaxed text-[var(--text-secondary)]">
         <section>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">1. Qué es Obriko</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">1. Qué es Jornivo</h2>
           <p className="mt-2">
-            Obriko es tu libreta privada de personal: te ayuda a guardar, calificar y encontrar rápido a los
+            Jornivo es tu libreta privada de personal: te ayuda a guardar, calificar y encontrar rápido a los
             trabajadores de confianza (albañiles, electricistas, etc.) para tus obras. Es operada por Jossef
             Montiveros Toribio, persona natural, desde Perú.
           </p>
           <p className="mt-2">
-            <strong className="text-[var(--text-primary)]">Obriko NO es</strong> un marketplace ni una bolsa de
+            <strong className="text-[var(--text-primary)]">Jornivo NO es</strong> un marketplace ni una bolsa de
             trabajo: no publicamos a tus trabajadores para que otros los contraten, ni verificamos su identidad,
             certificaciones o antecedentes. Es tu red privada, construida con la gente que ya conoces.
           </p>
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">2. Quién puede usar Obriko</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">2. Quién puede usar Jornivo</h2>
           <p className="mt-2">
-            Obriko está pensado para dueños y encargados de negocios de construcción o remodelación, mayores de 18
+            Jornivo está pensado para dueños y encargados de negocios de construcción o remodelación, mayores de 18
             años. Al crear una cuenta, declaras que cumples con esa condición y que la información que ingresas es
             veraz.
           </p>
@@ -67,10 +67,10 @@ export default function TerminosPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">5. Qué NO garantiza Obriko</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">5. Qué NO garantiza Jornivo</h2>
           <p className="mt-2">
             La disponibilidad que ves en la app refleja lo último que alguien marcó — tú o el propio trabajador desde
-            su enlace. Obriko no verifica en tiempo real si esa información sigue siendo exacta, ni garantiza que un
+            su enlace. Jornivo no verifica en tiempo real si esa información sigue siendo exacta, ni garantiza que un
             trabajador marcado como "disponible" acepte finalmente la obra. La decisión de contratar o no a alguien es
             siempre tuya, bajo tu propio criterio.
           </p>
@@ -92,7 +92,7 @@ export default function TerminosPage() {
         <section>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">7. Límite de responsabilidad</h2>
           <p className="mt-2">
-            Obriko se ofrece "tal cual", como una herramienta de organización. En la medida permitida por la ley, no
+            Jornivo se ofrece "tal cual", como una herramienta de organización. En la medida permitida por la ley, no
             respondemos por pérdidas o daños derivados de decisiones que tomes basándote en la información de la app
             (por ejemplo, contratar a un trabajador que resultó no estar disponible), ni por interrupciones del
             servicio fuera de nuestro control razonable.

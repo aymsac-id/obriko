@@ -40,7 +40,7 @@ export default async function AdminUsoPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-[24px] font-bold [font-family:var(--font-display)]">Uso</h1>
-        <p className="text-[13px] text-[var(--text-secondary)]">¿La gente usa Obriko de verdad, y vuelve?</p>
+        <p className="text-[13px] text-[var(--text-secondary)]">¿La gente usa Jornivo de verdad, y vuelve?</p>
       </div>
 
       <div>

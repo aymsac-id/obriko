@@ -1,6 +1,6 @@
 'use client';
 
-// Login/registro de Obriko — Sesión 6: Supabase Auth real (email+password). El botón de
+// Login/registro de Jornivo — Sesión 6: Supabase Auth real (email+password). El botón de
 // Google se retira por ahora (requiere configurar OAuth en Google Cloud Console, fuera del
 // alcance de esta sesión) — mejor no mostrarlo a medias que mostrar un botón que no hace lo
 // que promete (regla UX #11). Vuelve cuando esté conectado de verdad.

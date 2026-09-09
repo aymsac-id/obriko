@@ -176,7 +176,7 @@ export default function DisponibilidadPublicaPage() {
             Se guarda solo — puedes cerrar esta página cuando quieras.
           </p>
           <p className="mt-2 text-center text-[11px] text-[var(--text-tertiary)]">
-            Quien te compartió este enlace usa Obriko para organizar su cuadrilla.{' '}
+            Quien te compartió este enlace usa Jornivo para organizar su cuadrilla.{' '}
             <a href="/privacidad" className="underline-offset-4 hover:underline">
               Cómo tratamos tus datos
             </a>

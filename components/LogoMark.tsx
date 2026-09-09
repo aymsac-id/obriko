@@ -1,7 +1,7 @@
-// Logo de Obriko — pin/anillo de ubicación con un casco de construcción y tres personas
-// (la cuadrilla) adentro, en el acento de marca. Vector recreado a partir del archivo real
-// que dio el usuario (public/obriko-logo-full.png, usado para piezas grandes/marketing);
-// este SVG es la versión ligera para tamaños chicos (header, favicon) con fondo transparente
+// Logo de Jornivo — pin/anillo de ubicación con un casco de construcción y tres personas
+// (la cuadrilla) adentro, en el acento de marca. Mismo concepto e ícono que ya existía para
+// Obriko (el rebranding a Jornivo, 2026-09-09, mantiene la geometría — solo cambia el
+// wordmark); es la versión ligera para tamaños chicos (header, favicon) con fondo transparente
 // que se adapta al tema. Un solo componente reusado en landing/onboarding/paywall/login.
 
 export function LogoMark({ size = 24, className }: { size?: number; className?: string }) {
@@ -13,7 +13,7 @@ export function LogoMark({ size = 24, className }: { size?: number; className?: 
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Obriko"
+      aria-label="Jornivo"
       className={className}
     >
       <defs>
@@ -58,8 +58,8 @@ export function LogoMark({ size = 24, className }: { size?: number; className?: 
   );
 }
 
-/* ── <BrandLockup> — ícono + "OBRIKO" en Archivo Black (la misma tipografía gruesa del
-   logo real que dio el usuario), para los headers donde el nombre debe verse grande y con
+/* ── <BrandLockup> — ícono + "JORNIVO" en Archivo Black (la misma tipografía gruesa que
+   ya usaba el wordmark de Obriko), para los headers donde el nombre debe verse grande y con
    fuerza. Se pasa entero como prop `logo` de Hero/FooterLegal del kit (con appName="") para
    no tocar esos componentes — el kit solo controla el tamaño de un span de texto plano que
    no alcanza para replicar la tipografía del lockup real. ── */
@@ -71,7 +71,7 @@ export function BrandLockup({ size = 32, className }: { size?: number; className
         className="font-black uppercase leading-none tracking-[0.01em] text-[var(--text-primary)] [font-family:var(--font-display)]"
         style={{ fontSize: size * 0.62 }}
       >
-        Obriko
+        Jornivo
       </span>
     </span>
   );

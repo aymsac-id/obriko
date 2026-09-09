@@ -49,7 +49,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Obriko usa modo oscuro FIJO (contrato de FICHA-ARTE.md) — no hay toggle
+/* Jornivo usa modo oscuro FIJO (contrato de FICHA-ARTE.md) — no hay toggle
    claro/oscuro: los tokens de shadcn/ui viven directo en :root con la paleta
    de marca, para que cualquier componente (Button, Card, Dialog...) que se use
    en el onboarding/paywall/app interna nazca ya con la identidad correcta. */

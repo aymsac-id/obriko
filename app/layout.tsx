@@ -21,9 +21,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Obriko — Encuentra en segundos quién está libre mañana",
+  title: "Jornivo — Encuentra en segundos quién está libre mañana",
   description:
-    "Obriko es la libreta privada donde el constructor guarda, califica y encuentra al instante al personal confiable y disponible para su próxima obra.",
+    "Jornivo es la libreta privada donde el constructor guarda, califica y encuentra al instante al personal confiable y disponible para su próxima obra.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

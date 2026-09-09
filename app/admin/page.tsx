@@ -15,7 +15,7 @@ export default async function AdminResumenPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-[24px] font-bold [font-family:var(--font-display)]">Resumen</h1>
-        <p className="text-[13px] text-[var(--text-secondary)]">Cómo está Obriko hoy, de un vistazo.</p>
+        <p className="text-[13px] text-[var(--text-secondary)]">Cómo está Jornivo hoy, de un vistazo.</p>
       </div>
 
       <AvisoBanner avisos={avisos} />

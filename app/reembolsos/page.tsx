@@ -17,7 +17,7 @@ export default function ReembolsosPage() {
 
       <div className="mt-8 flex flex-col gap-8 text-base leading-relaxed text-[var(--text-secondary)]">
         <section>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Hoy, Obriko no cobra nada</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Hoy, Jornivo no cobra nada</h2>
           <p className="mt-2">
             El plan Gratis (hasta 10 trabajadores) no tiene costo. El plan Starter existe en la app como vista previa,
             pero <strong className="text-[var(--text-primary)]">todavía no está conectado a ningún cobro real</strong>{' '}
@@ -40,7 +40,7 @@ export default function ReembolsosPage() {
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">Cómo "cancelar" hoy</h2>
           <p className="mt-2">
             Como no hay ningún cobro activo, no hay nada que cancelar en el sentido de una suscripción. Si quieres
-            dejar de usar Obriko, puedes simplemente no volver a entrar, o eliminar tu cuenta y todos tus datos por
+            dejar de usar Jornivo, puedes simplemente no volver a entrar, o eliminar tu cuenta y todos tus datos por
             completo desde <strong className="text-[var(--text-primary)]">Ajustes → Eliminar mi cuenta y mis datos</strong>.
             Cuando el cobro real esté activo, agregaremos aquí el enlace directo al portal de Hotmart para cancelar la
             renovación automática en un solo paso.

@@ -1,6 +1,6 @@
 'use client';
 
-// Onboarding de Obriko — Sesión 4. 4 pasos internos (bienvenida → importar →
+// Onboarding de Jornivo — Sesión 4. 4 pasos internos (bienvenida → importar →
 // marcar confiables → resultado) antes de pasar a /paywall (SECUENCIA-MAESTRA-CONSTRUCCION.md).
 // Estado en localStorage (lib/onboarding-storage.ts) — sin backend todavía.
 // Copy trazado a FICHA-AVATAR.md en docs/copy/onboarding-paywall.md.

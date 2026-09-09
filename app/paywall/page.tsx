@@ -1,6 +1,6 @@
 'use client';
 
-// Paywall de Obriko — Sesión 4. Modelo onboarding-first/freemium (ESTADO.md): esta
+// Paywall de Jornivo — Sesión 4. Modelo onboarding-first/freemium (ESTADO.md): esta
 // pantalla es una INVITACIÓN tras vivir el valor, nunca un bloqueo — el CTA principal
 // siempre puede seguir gratis. Estructura de 50-DISENO-ONBOARDING-PAYWALL.md §C adaptada
 // (sin trial: no hay fecha de cobro que prometer todavía, ver C3ter "mockups honestos").

@@ -1,6 +1,6 @@
 'use client';
 
-// Landing de Obriko — compuesta con el kit canónico de plantillas-codigo/landing/
+// Landing de Jornivo — compuesta con el kit canónico de plantillas-codigo/landing/
 // (copiado a components/landing/). Orden de las 10 secciones: 19-PAGINA-DE-VENTAS.md.
 // Copy MARCADO trazado a FICHA-AVATAR.md: docs/copy/landing.md.
 // Modelo 2 (onboarding-first/freemium, ESTADO.md): el CTA lleva a /onboarding, nunca a
@@ -23,7 +23,7 @@ import { BrandLockup } from '@/components/LogoMark';
 const CTA_HREF = '/onboarding';
 const CTA_LABEL = 'Armar mi cuadrilla gratis';
 
-export default function LandingObriko() {
+export default function LandingJornivo() {
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
       {/* 1. HERO — fondo real dado por el usuario (obra + circuito), detrás del contenido del kit */}
@@ -47,7 +47,7 @@ export default function LandingObriko() {
           visual={
             <img
               src="/app-preview/buscador.png"
-              alt="La búsqueda de Obriko: trabajadores disponibles ordenados por confiabilidad, con su franja semanal de disponibilidad"
+              alt="La búsqueda de Jornivo: trabajadores disponibles ordenados por confiabilidad, con su franja semanal de disponibilidad"
               className="w-full object-cover object-top"
             />
           }
@@ -146,7 +146,7 @@ export default function LandingObriko() {
       {/* 7. PROMESA DE CIERRE — Promesa de Cero Compromiso (sin checkout real aún) */}
       <PromesaCompromiso
         nombre="la Promesa de Cero Compromiso"
-        condicionMarked="Empiezas gratis, sin tarjeta. Si Obriko no te ahorra llamadas, [b]cancelas cuando quieras[/b], sin preguntas."
+        condicionMarked="Empiezas gratis, sin tarjeta. Si Jornivo no te ahorra llamadas, [b]cancelas cuando quieras[/b], sin preguntas."
       />
 
       {/* 8. FAQ — objeciones reales de FICHA-AVATAR.md */}
@@ -155,7 +155,7 @@ export default function LandingObriko() {
           {
             pregunta: '¿Ya tengo todos mis contactos en WhatsApp, para qué esto?',
             respuestaMarked:
-              'WhatsApp guarda contactos, pero no te dice quién está libre AHORA ni cómo trabajó contigo antes. [b]Obriko sí[/b].',
+              'WhatsApp guarda contactos, pero no te dice quién está libre AHORA ni cómo trabajó contigo antes. [b]Jornivo sí[/b].',
           },
           {
             pregunta: '¿Quién actualiza la disponibilidad, y mis maestros van a tener que instalar algo?',
@@ -175,7 +175,7 @@ export default function LandingObriko() {
           {
             pregunta: '¿Esto ya funciona en algún lado o es una idea nueva?',
             respuestaMarked:
-              'La misma idea —saber quién está disponible sin llamar— [b]ya la usan afuera Bridgit Bench y LaborChart (hoy parte de Procore)[/b]; Obriko la trae a tu obra en español y sin volverse un software pesado.',
+              'La misma idea —saber quién está disponible sin llamar— [b]ya la usan afuera Bridgit Bench y LaborChart (hoy parte de Procore)[/b]; Jornivo la trae a tu obra en español y sin volverse un software pesado.',
           },
         ]}
       />
@@ -183,11 +183,11 @@ export default function LandingObriko() {
       {/* 9. CTA FINAL */}
       <CtaFinal
         h2Marked="Deja de llamar. Empieza a [acento]saber[/acento]."
-        futurePacingMarked="Mañana abres Obriko, ves quién está libre y armas tu cuadrilla en minutos."
+        futurePacingMarked="Mañana abres Jornivo, ves quién está libre y armas tu cuadrilla en minutos."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         recap="Gratis hasta 10 trabajadores — sin tarjeta"
-        psMarked="PS: Obriko es tu libreta privada de personal confiable, evaluada y con disponibilidad en tiempo real. Empiezas [b]gratis, sin tarjeta[/b], y ves quién puede trabajar mañana en segundos."
+        psMarked="PS: Jornivo es tu libreta privada de personal confiable, evaluada y con disponibilidad en tiempo real. Empiezas [b]gratis, sin tarjeta[/b], y ves quién puede trabajar mañana en segundos."
       />
 
       {/* 10. FOOTER LEGAL */}

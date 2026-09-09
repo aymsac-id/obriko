@@ -1,5 +1,5 @@
 // Política de Privacidad — auditoría legal completa (47-LEGAL-FISCAL-Y-PRIVACIDAD.md),
-// 2026-09-06. Describe la app REAL: qué datos recopila Obriko hoy, con qué proveedores reales
+// 2026-09-06. Describe la app REAL: qué datos recopila Jornivo hoy, con qué proveedores reales
 // (Supabase, Vercel, Hotmart cuando se active), y el camino real de eliminación de cuenta
 // (app/app/ajustes/actions.ts). Se actualiza cada vez que cambie algo material — y ese cambio
 // se avisa por correo a las cuentas activas (no en silencio).
@@ -20,7 +20,7 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">1. Quién es el responsable</h2>
           <p className="mt-2">
-            Obriko es operado por <strong className="text-[var(--text-primary)]">Jossef Montiveros Toribio</strong>,
+            Jornivo es operado por <strong className="text-[var(--text-primary)]">Jossef Montiveros Toribio</strong>,
             persona natural, desde Perú. Cualquier duda sobre tus datos la puedes escribir a{' '}
             <a href={`mailto:${CONTACTO}`} className="text-[var(--accent)] underline-offset-4 hover:underline">
               {CONTACTO}
@@ -75,12 +75,12 @@ export default function PrivacidadPage() {
           </h2>
           <p className="mt-2">
             Cuando agregas a alguien a tu libreta (por importación, tarjeta de contacto o a mano), tú decides guardar
-            el nombre y el celular de esa persona porque ya tienes una relación de trabajo con ella. Al usar Obriko,
+            el nombre y el celular de esa persona porque ya tienes una relación de trabajo con ella. Al usar Jornivo,
             declaras que tienes una razón legítima para guardar esos datos (una relación laboral o de obra existente)
             y que eres tú, como dueño de la cuenta, quien responde por ese tratamiento frente a esa persona.
           </p>
           <p className="mt-2">
-            Si uno de tus trabajadores quiere que sus datos se eliminen de Obriko, puede escribirnos a{' '}
+            Si uno de tus trabajadores quiere que sus datos se eliminen de Jornivo, puede escribirnos a{' '}
             <a href={`mailto:${CONTACTO}`} className="text-[var(--accent)] underline-offset-4 hover:underline">
               {CONTACTO}
             </a>{' '}
@@ -90,7 +90,7 @@ export default function PrivacidadPage() {
 
         <section>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">4. Con quién compartimos datos</h2>
-          <p className="mt-2">No vendemos tus datos a nadie. Los compartimos solo con quien nos ayuda a operar Obriko:</p>
+          <p className="mt-2">No vendemos tus datos a nadie. Los compartimos solo con quien nos ayuda a operar Jornivo:</p>
           <ul className="mt-2 list-disc space-y-2 pl-5">
             <li>
               <strong className="text-[var(--text-primary)]">Supabase</strong> — guarda tu base de datos, gestiona el
@@ -118,7 +118,7 @@ export default function PrivacidadPage() {
           <p className="mt-2">
             Supabase y Vercel procesan y guardan los datos en infraestructura fuera de Perú (Estados Unidos). Esto es
             una transferencia internacional necesaria para que el servicio funcione — ambos proveedores operan bajo
-            sus propios estándares de seguridad y contratos de protección de datos. Al usar Obriko, aceptas esta
+            sus propios estándares de seguridad y contratos de protección de datos. Al usar Jornivo, aceptas esta
             transferencia como parte indispensable del servicio.
           </p>
         </section>
@@ -126,7 +126,7 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">6. Cookies</h2>
           <p className="mt-2">
-            Obriko usa únicamente la cookie técnica que mantiene tu sesión iniciada — es indispensable para que la app
+            Jornivo usa únicamente la cookie técnica que mantiene tu sesión iniciada — es indispensable para que la app
             funcione y no requiere tu consentimiento porque no rastrea nada. No usamos cookies de publicidad ni de
             analítica de terceros. Si eso cambia, te pediremos tu consentimiento antes con un aviso claro, no una
             casilla ya marcada.
@@ -149,7 +149,7 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">8. Edad mínima</h2>
           <p className="mt-2">
-            Obriko es una herramienta para dueños y encargados de negocios de construcción — su uso está pensado para
+            Jornivo es una herramienta para dueños y encargados de negocios de construcción — su uso está pensado para
             mayores de 18 años.
           </p>
         </section>

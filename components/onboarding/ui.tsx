@@ -37,7 +37,7 @@ export function FunnelHeader({
         ) : null}
         <Link
           href="/"
-          aria-label="Obriko — salir al inicio"
+          aria-label="Jornivo — salir al inicio"
           className="flex items-center text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
         >
           <BrandLockup size={32} />

@@ -1,4 +1,4 @@
--- Obriko — esquema inicial (Sesión 6).
+-- Jornivo (antes Obriko) — esquema inicial (Sesión 6).
 -- Pégalo completo en Supabase → SQL Editor → New query → Run.
 -- Decisiones (ver ESTADO.md → Decisiones técnicas):
 --   * 1 empresa por dueño de cuenta (owner_id = auth.uid()), creada automáticamente al registrarse.
