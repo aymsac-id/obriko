@@ -4,17 +4,25 @@
 // pantalla es una INVITACIÓN tras vivir el valor, nunca un bloqueo — el CTA principal
 // siempre puede seguir gratis. Estructura de 50-DISENO-ONBOARDING-PAYWALL.md §C adaptada
 // (sin trial: no hay fecha de cobro que prometer todavía, ver C3ter "mockups honestos").
-// TODO Sesión 6: conectar el botón de Starter/Pro al checkout real de Hotmart (18-VENTA-HOTMART.md).
+//
+// Checkout real de Hotmart (Sesión 6.2, 18-VENTA-HOTMART.md): si YA hay sesión iniciada (el
+// usuario llegó aquí desde Ajustes/"cupo lleno", no desde el onboarding de una cuenta nueva) y
+// existe NEXT_PUBLIC_HOTMART_CHECKOUT_URL, "Starter" abre el checkout real con su correo
+// pre-llenado — así el webhook conecta la compra con SU cuenta ya creada, en vez de crear una
+// segunda (el bug #1 de este modelo). Mientras el producto no exista en Hotmart (o el usuario
+// todavía no tiene cuenta, camino de onboarding), sigue el flujo de siempre: se guarda la
+// intención y se activa al crear la cuenta, sin cobro real.
 //
 // Correcciones tras revisor-visual (docs/revisiones/paywall-veredicto.md, NO LISTA 31/40·14/20·14/20):
 // PasoShell (profundidad) + onBack (control/libertad) + CTAs 1ª persona con la promesa junto al
 // botón + whileTap en PlanCard + línea de agitación con la escena real del avatar antes del value stack.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Lock, Sparkles, type LucideIcon } from 'lucide-react';
 import { guardarEstadoOnboarding } from '@/lib/onboarding-storage';
+import { crearClienteSupabase } from '@/lib/supabase/client';
 import { FunnelHeader, PasoShell, PrimaryCta, SecondaryCta, StepFooter, useStepReveal } from '@/components/onboarding/ui';
 import { CheckCustom, Hairline, IconChip } from '@/components/landing/ui';
 import { MarkedCopy } from '@/components/landing/MarkedCopy';
@@ -29,9 +37,25 @@ export default function PaywallPage() {
   const router = useRouter();
   const [plan, setPlan] = useState<'gratis' | 'starter'>('gratis');
   const [error, setError] = useState<string | null>(null);
+  const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
   const { contenedor, item } = useStepReveal(0.08);
 
+  useEffect(() => {
+    crearClienteSupabase()
+      .auth.getUser()
+      .then(({ data }) => setEmailUsuario(data.user?.email ?? null));
+  }, []);
+
   function continuar() {
+    const checkoutBase = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL;
+    // Checkout real: solo si ya hay sesión (sabemos con qué cuenta conectar la compra) y el
+    // producto ya existe en Hotmart. Si cualquiera falta, sigue el flujo de siempre (sin cobro).
+    if (plan === 'starter' && checkoutBase && emailUsuario) {
+      const url = new URL(checkoutBase);
+      url.searchParams.set('email', emailUsuario);
+      window.location.href = url.toString();
+      return;
+    }
     try {
       guardarEstadoOnboarding({ planElegido: plan });
       setError(null);
