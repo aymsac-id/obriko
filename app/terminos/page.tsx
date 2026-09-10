@@ -48,7 +48,7 @@ export default function TerminosPage() {
           <p className="mt-2">
             ⚠️ <strong className="text-[var(--text-primary)]">Hoy, elegir el plan Starter no genera ningún cobro</strong>{' '}
             — todavía no conectamos una pasarela de pago real (usaremos Hotmart). El precio de referencia que ves en
-            la app (S/39/mes) es el que se activará cuando el cobro esté listo. Antes de cobrarte por primera vez, te
+            la app ($12/mes, o $10/mes facturado anual) es el que se activará cuando el cobro esté listo. Antes de cobrarte por primera vez, te
             avisaremos con claridad la fecha, el monto y que la suscripción se renueva automáticamente, y podrás
             cancelar cuando quieras desde tu cuenta.
           </p>

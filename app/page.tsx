@@ -117,7 +117,7 @@ export default function LandingJornivo() {
         anual={{
           nombre: 'Starter',
           badge: 'MÁS POPULAR',
-          precioMes: 'S/39',
+          precioMes: '$12',
           totalAnual: 'Cancelas cuando quieras — sin permanencia',
           ahorro: 'Hasta 50 trabajadores + búsqueda ilimitada',
           ctaLabel: CTA_LABEL,
@@ -131,7 +131,7 @@ export default function LandingJornivo() {
         }}
         mensual={{
           nombre: 'Gratis',
-          precioMes: 'S/0',
+          precioMes: '$0',
           ctaLabel: 'Probar gratis con 10 trabajadores',
           ctaHref: CTA_HREF,
           features: [
@@ -170,7 +170,7 @@ export default function LandingJornivo() {
           {
             pregunta: '¿Cuánto cuesta y puedo cancelar cuando quiera?',
             respuestaMarked:
-              'Empiezas gratis hasta con 10 trabajadores; si creces, planes desde S/39 al mes, [b]sin permanencia[/b].',
+              'Empiezas gratis hasta con 10 trabajadores; si creces, planes desde $12 al mes, [b]sin permanencia[/b].',
           },
           {
             pregunta: '¿Esto ya funciona en algún lado o es una idea nueva?',

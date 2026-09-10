@@ -106,7 +106,7 @@ export default function PaywallPage() {
             <PlanCard
               nombre="Gratis"
               badge="TU PLAN AHORA"
-              precio="S/0"
+              precio="$0"
               detalle="Hasta 10 trabajadores · búsqueda y disponibilidad incluidas"
               seleccionado={plan === 'gratis'}
               onSelect={() => setPlan('gratis')}
@@ -114,9 +114,9 @@ export default function PaywallPage() {
             <PlanCard
               nombre="Starter"
               badge="CUANDO CREZCAS"
-              precio={ciclo === 'anual' ? 'S/32.50/mes' : 'S/39/mes'}
+              precio={ciclo === 'anual' ? '$10/mes' : '$12/mes'}
               detalle="Hasta 50 trabajadores · sin permanencia"
-              notaPrecio={ciclo === 'anual' ? 'Se cobra S/390 una vez al año' : undefined}
+              notaPrecio={ciclo === 'anual' ? 'Se cobra $120 una vez al año' : undefined}
               seleccionado={plan === 'starter'}
               onSelect={() => setPlan('starter')}
               icon={Sparkles}
