@@ -7,11 +7,16 @@
 //
 // Checkout real de Hotmart (Sesión 6.2, 18-VENTA-HOTMART.md): si YA hay sesión iniciada (el
 // usuario llegó aquí desde Ajustes/"cupo lleno", no desde el onboarding de una cuenta nueva) y
-// existe NEXT_PUBLIC_HOTMART_CHECKOUT_URL, "Starter" abre el checkout real con su correo
+// existe la URL de checkout del ciclo elegido, "Starter" abre el checkout real con su correo
 // pre-llenado — así el webhook conecta la compra con SU cuenta ya creada, en vez de crear una
 // segunda (el bug #1 de este modelo). Mientras el producto no exista en Hotmart (o el usuario
 // todavía no tiene cuenta, camino de onboarding), sigue el flujo de siempre: se guarda la
 // intención y se activa al crear la cuenta, sin cobro real.
+//
+// Plan anual (2026-09-10, pedido del usuario): mismo Starter, facturado una vez al año con
+// descuento — precio decidido con el criterio estándar del sector ("paga 10 meses, usa 12"):
+// S/390/año en vez de S/468 (12 × S/39). El total anual siempre visible en letra chica junto al
+// precio mensual-equivalente grande (02C/19: transparencia obligatoria del checkout).
 //
 // Correcciones tras revisor-visual (docs/revisiones/paywall-veredicto.md, NO LISTA 31/40·14/20·14/20):
 // PasoShell (profundidad) + onBack (control/libertad) + CTAs 1ª persona con la promesa junto al
@@ -36,6 +41,7 @@ const BENEFICIOS = [
 export default function PaywallPage() {
   const router = useRouter();
   const [plan, setPlan] = useState<'gratis' | 'starter'>('gratis');
+  const [ciclo, setCiclo] = useState<'mensual' | 'anual'>('mensual');
   const [error, setError] = useState<string | null>(null);
   const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
   const { contenedor, item } = useStepReveal(0.08);
@@ -47,7 +53,10 @@ export default function PaywallPage() {
   }, []);
 
   function continuar() {
-    const checkoutBase = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL;
+    const checkoutBase =
+      ciclo === 'anual'
+        ? process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL_ANUAL
+        : process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL_MENSUAL;
     // Checkout real: solo si ya hay sesión (sabemos con qué cuenta conectar la compra) y el
     // producto ya existe en Hotmart. Si cualquiera falta, sigue el flujo de siempre (sin cobro).
     if (plan === 'starter' && checkoutBase && emailUsuario) {
@@ -105,12 +114,40 @@ export default function PaywallPage() {
             <PlanCard
               nombre="Starter"
               badge="CUANDO CREZCAS"
-              precio="S/39/mes"
+              precio={ciclo === 'anual' ? 'S/32.50/mes' : 'S/39/mes'}
               detalle="Hasta 50 trabajadores · sin permanencia"
+              notaPrecio={ciclo === 'anual' ? 'Se cobra S/390 una vez al año' : undefined}
               seleccionado={plan === 'starter'}
               onSelect={() => setPlan('starter')}
               icon={Sparkles}
             />
+            {plan === 'starter' ? (
+              <div className="-mt-1 flex gap-2 self-start pl-1">
+                <button
+                  type="button"
+                  onClick={() => setCiclo('mensual')}
+                  aria-pressed={ciclo === 'mensual'}
+                  className={`h-8 rounded-full px-3 text-[13px] font-semibold [touch-action:manipulation] ${
+                    ciclo === 'mensual' ? 'bg-[var(--chip-bg)] text-[var(--accent)]' : 'text-[var(--text-tertiary)]'
+                  }`}
+                >
+                  Mensual
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCiclo('anual')}
+                  aria-pressed={ciclo === 'anual'}
+                  className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold [touch-action:manipulation] ${
+                    ciclo === 'anual' ? 'bg-[var(--chip-bg)] text-[var(--accent)]' : 'text-[var(--text-tertiary)]'
+                  }`}
+                >
+                  Anual
+                  <span className="rounded-[6px] bg-[var(--accent)] px-1.5 py-0.5 text-[11px] font-bold uppercase text-[var(--bg)]">
+                    2 meses gratis
+                  </span>
+                </button>
+              </div>
+            ) : null}
           </motion.div>
         </motion.div>
       </div>
@@ -150,6 +187,7 @@ function PlanCard({
   badge,
   precio,
   detalle,
+  notaPrecio,
   seleccionado,
   onSelect,
   icon,
@@ -158,6 +196,9 @@ function PlanCard({
   badge: string;
   precio: string;
   detalle: string;
+  /** Total real cuando el precio grande es un promedio mensual (ej. plan anual) — transparencia
+   * obligatoria del checkout (02C/19): nunca mostrar solo el "por mes" de un cobro anual. */
+  notaPrecio?: string;
   seleccionado: boolean;
   onSelect: () => void;
   icon?: LucideIcon;
@@ -182,6 +223,7 @@ function PlanCard({
           <p className="tabular-nums text-lg font-bold text-[var(--accent)]">{precio}</p>
         </div>
         <p className="mt-1 text-sm text-[var(--text-secondary)]">{detalle}</p>
+        {notaPrecio ? <p className="mt-0.5 text-[12px] text-[var(--text-tertiary)]">{notaPrecio}</p> : null}
       </div>
     </motion.button>
   );
