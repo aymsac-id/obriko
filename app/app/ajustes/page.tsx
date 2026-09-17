@@ -6,9 +6,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Bell, FileText, LogOut, ShieldCheck, Trash2 } from 'lucide-react';
+import { Bell, Building2, FileText, LogOut, ShieldCheck, Trash2 } from 'lucide-react';
 import { getTrabajadores } from '@/lib/data/trabajadores';
-import { getPlanEmpresa, getRecordatorio, setRecordatorio, type Recordatorio } from '@/lib/data/empresa';
+import {
+  getNombreEmpresa,
+  getPlanEmpresa,
+  getRecordatorio,
+  setNombreEmpresa,
+  setRecordatorio,
+  type Recordatorio,
+} from '@/lib/data/empresa';
 import { crearClienteSupabase } from '@/lib/supabase/client';
 import { eliminarCuentaAction } from './actions';
 
@@ -33,6 +40,10 @@ export default function AjustesPage() {
   const [eliminando, setEliminando] = useState(false);
   const [recordatorio, setRecordatorioLocal] = useState<Recordatorio | null | undefined>(undefined);
   const [guardandoRecordatorio, setGuardandoRecordatorio] = useState(false);
+  const [nombreEmpresa, setNombreEmpresaLocal] = useState('');
+  const [guardandoNombre, setGuardandoNombre] = useState(false);
+  const [errorNombre, setErrorNombre] = useState<string | null>(null);
+  const [nombreGuardado, setNombreGuardado] = useState(false);
 
   useEffect(() => {
     const supabase = crearClienteSupabase();
@@ -40,6 +51,9 @@ export default function AjustesPage() {
     getPlanEmpresa()
       .then(setPlan)
       .catch(() => setPlan('gratis'));
+    getNombreEmpresa()
+      .then(setNombreEmpresaLocal)
+      .catch(() => setNombreEmpresaLocal('Mi empresa'));
     getRecordatorio()
       .then(setRecordatorioLocal)
       .catch(() => setRecordatorioLocal(null));
@@ -57,6 +71,20 @@ export default function AjustesPage() {
       window.alert('No pudimos guardar el recordatorio. Intenta de nuevo.');
     } finally {
       setGuardandoRecordatorio(false);
+    }
+  }
+
+  async function guardarNombreEmpresa() {
+    setGuardandoNombre(true);
+    setErrorNombre(null);
+    setNombreGuardado(false);
+    try {
+      await setNombreEmpresa(nombreEmpresa);
+      setNombreGuardado(true);
+    } catch (err) {
+      setErrorNombre(err instanceof Error ? err.message : 'No pudimos guardar el nombre.');
+    } finally {
+      setGuardandoNombre(false);
     }
   }
 
@@ -98,6 +126,43 @@ export default function AjustesPage() {
       <div className="mt-5 rounded-[var(--radius-card)] bg-[var(--surface)] px-4 py-4">
         <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)]">Tu cuenta</p>
         <p className="mt-1 text-[15px] font-medium">{email ?? 'Sesión activa'}</p>
+      </div>
+
+      <div className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface)] px-4 py-4">
+        <p className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)]">
+          <Building2 size={13} aria-hidden="true" /> Nombre de tu empresa o cuadrilla
+        </p>
+        <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+          Así te van a ver tus trabajadores cuando les pidas confirmar disponibilidad.
+        </p>
+        <div className="mt-3 flex gap-2">
+          <input
+            type="text"
+            value={nombreEmpresa}
+            onChange={(e) => {
+              setNombreEmpresaLocal(e.target.value);
+              setNombreGuardado(false);
+            }}
+            maxLength={60}
+            placeholder="Ej. AYM Arquitectos SAC"
+            className="h-10 flex-1 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface-2)] px-3 text-[14px] font-medium text-[var(--text-primary)]"
+          />
+          <button
+            type="button"
+            onClick={guardarNombreEmpresa}
+            disabled={guardandoNombre || nombreEmpresa.trim().length < 2}
+            className="h-10 shrink-0 rounded-[var(--radius-button)] bg-[var(--accent)] px-4 text-[13px] font-semibold text-[var(--bg)] [touch-action:manipulation] disabled:opacity-50"
+          >
+            {guardandoNombre ? 'Guardando…' : 'Guardar'}
+          </button>
+        </div>
+        {errorNombre ? (
+          <p role="alert" className="mt-2 text-[12px] font-medium text-[var(--danger)]">
+            {errorNombre}
+          </p>
+        ) : nombreGuardado ? (
+          <p className="mt-2 text-[12px] font-medium text-[var(--success)]">Guardado.</p>
+        ) : null}
       </div>
 
       <div className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface)] px-4 py-4">

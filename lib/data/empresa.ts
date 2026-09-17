@@ -23,6 +23,24 @@ export async function getEmpresaId(supabase: SupabaseClient): Promise<string> {
   return data.id as string;
 }
 
+/** El nombre que ve el trabajador en el enlace de disponibilidad ("[Nombre] pide tu
+ * disponibilidad") — por defecto "Mi empresa" hasta que el dueño lo personalice aquí. */
+export async function getNombreEmpresa(): Promise<string> {
+  const supabase = crearClienteSupabase();
+  const empresaId = await getEmpresaId(supabase);
+  const { data } = await supabase.from('empresas').select('nombre').eq('id', empresaId).maybeSingle();
+  return data?.nombre ?? 'Mi empresa';
+}
+
+export async function setNombreEmpresa(nombre: string): Promise<void> {
+  const limpio = nombre.trim();
+  if (limpio.length < 2) throw new Error('Escribe un nombre de al menos 2 letras.');
+  const supabase = crearClienteSupabase();
+  const empresaId = await getEmpresaId(supabase);
+  const { error } = await supabase.from('empresas').update({ nombre: limpio }).eq('id', empresaId);
+  if (error) throw new Error('No pudimos guardar el nombre. Intenta de nuevo.');
+}
+
 export async function getPlanEmpresa(): Promise<'gratis' | 'starter'> {
   const supabase = crearClienteSupabase();
   const empresaId = await getEmpresaId(supabase);
