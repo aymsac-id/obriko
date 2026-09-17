@@ -22,6 +22,11 @@ import { BrandLockup } from '@/components/LogoMark';
 
 const CTA_HREF = '/onboarding';
 const CTA_LABEL = 'Armar mi cuadrilla gratis';
+// El plan Starter de la oferta compra directo en Hotmart (checkout real) en vez de pasar por el
+// onboarding — a diferencia del resto de CTAs de la landing, que siguen llevando a /onboarding
+// (Modelo 2, ver nota de arriba). Si la URL de checkout todavía no está configurada, cae de
+// vuelta a /onboarding — cero pantalla rota.
+const CHECKOUT_STARTER = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL_MENSUAL || CTA_HREF;
 
 export default function LandingJornivo() {
   return (
@@ -120,8 +125,8 @@ export default function LandingJornivo() {
           precioMes: '$12',
           totalAnual: 'Cancelas cuando quieras — sin permanencia',
           ahorro: 'Hasta 50 trabajadores + búsqueda ilimitada',
-          ctaLabel: CTA_LABEL,
-          ctaHref: CTA_HREF,
+          ctaLabel: 'Comprar Starter ahora',
+          ctaHref: CHECKOUT_STARTER,
           features: [
             'Hasta 50 trabajadores en tu libreta privada',
             'Búsqueda con filtros por oficio y confiabilidad',
