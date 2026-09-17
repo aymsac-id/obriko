@@ -49,7 +49,7 @@ export async function agregarUsuarioAction(formData: FormData): Promise<Resultad
 
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { nombre },
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://jornivo.vercel.app'}/login/restablecer`,
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://jornivo.app'}/login/restablecer`,
   });
 
   if (error) {
