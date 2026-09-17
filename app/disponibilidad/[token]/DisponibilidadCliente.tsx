@@ -43,7 +43,6 @@ export function DisponibilidadCliente() {
   const dias = getProximosDias(30);
   const [estado, setEstado] = useState<'cargando' | 'invalido' | 'listo'>('cargando');
   const [nombre, setNombre] = useState('');
-  const [oficio, setOficio] = useState('');
   const [empresaNombre, setEmpresaNombre] = useState('');
   const [disponibilidad, setDisponibilidad] = useState<Record<string, EstadoDisponibilidad>>({});
   const [guardando, setGuardando] = useState<string | null>(null);
@@ -61,7 +60,6 @@ export function DisponibilidadCliente() {
           return;
         }
         setNombre(filas[0].nombre);
-        setOficio(filas[0].oficio);
         setEmpresaNombre(filas[0].empresa_nombre);
         const mapa: Record<string, EstadoDisponibilidad> = {};
         for (const f of filas) if (f.fecha && f.estado) mapa[f.fecha] = f.estado;
@@ -124,7 +122,7 @@ export function DisponibilidadCliente() {
             <span className="font-semibold text-[var(--text-primary)]">{empresaNombre}</span> pide tu disponibilidad
           </p>
           <p className="mt-0.5 text-center text-[13px] text-[var(--text-tertiary)]">
-            {oficio} · Marca los días en que puedes trabajar este mes
+            Marca los días en que puedes trabajar este mes
           </p>
 
           {errorGuardado ? (

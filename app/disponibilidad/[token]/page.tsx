@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   const primerNombreCrudo = fila.nombre.split(' ')[0];
   const primerNombre = primerNombreCrudo.charAt(0).toUpperCase() + primerNombreCrudo.slice(1);
   const titulo = `${primerNombre}, ${fila.empresa_nombre} solicita tu disponibilidad`;
-  const descripcion = `${fila.oficio} · Marca en segundos los días en que puedes trabajar este mes, sin instalar nada.`;
+  const descripcion = 'Marca en segundos los días en que puedes trabajar este mes, sin instalar nada.';
   return {
     title: titulo,
     description: descripcion,
