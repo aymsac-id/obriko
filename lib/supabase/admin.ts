@@ -11,7 +11,7 @@ export function crearClienteSupabaseAdmin() {
       'Falta SUPABASE_SECRET_KEY en el servidor. Pégala en .env.local (o en las variables de entorno de Vercel) — nunca en el chat.'
     );
   }
-  return createClient(process.env.SUPABASE_URL!, secretKey, {
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, secretKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }

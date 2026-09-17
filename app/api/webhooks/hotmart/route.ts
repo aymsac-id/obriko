@@ -17,7 +17,7 @@ const REPLAY_WINDOW_MS = 5 * 60 * 1000;
 function admin() {
   const secretKey = process.env.SUPABASE_SECRET_KEY;
   if (!secretKey) throw new Error('Falta SUPABASE_SECRET_KEY — el webhook no puede aplicar cambios.');
-  return createClient(process.env.SUPABASE_URL!, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
 }
 
 /** Registrar el intento nunca debe poder tumbar la respuesta real (sobre todo la de rechazo):
