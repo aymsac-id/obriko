@@ -31,6 +31,7 @@ interface FilaPublica {
   oficio: string;
   fecha: string | null;
   estado: EstadoDisponibilidad | null;
+  empresa_nombre: string;
 }
 
 export default function DisponibilidadPublicaPage() {
@@ -42,6 +43,7 @@ export default function DisponibilidadPublicaPage() {
   const [estado, setEstado] = useState<'cargando' | 'invalido' | 'listo'>('cargando');
   const [nombre, setNombre] = useState('');
   const [oficio, setOficio] = useState('');
+  const [empresaNombre, setEmpresaNombre] = useState('');
   const [disponibilidad, setDisponibilidad] = useState<Record<string, EstadoDisponibilidad>>({});
   const [guardando, setGuardando] = useState<string | null>(null);
   const [errorGuardado, setErrorGuardado] = useState<string | null>(null);
@@ -59,6 +61,7 @@ export default function DisponibilidadPublicaPage() {
         }
         setNombre(filas[0].nombre);
         setOficio(filas[0].oficio);
+        setEmpresaNombre(filas[0].empresa_nombre);
         const mapa: Record<string, EstadoDisponibilidad> = {};
         for (const f of filas) if (f.fecha && f.estado) mapa[f.fecha] = f.estado;
         setDisponibilidad(mapa);
@@ -117,6 +120,9 @@ export default function DisponibilidadPublicaPage() {
             Hola, {nombre.split(' ')[0]}
           </h1>
           <p className="mt-1.5 text-center text-[14px] text-[var(--text-secondary)]">
+            <span className="font-semibold text-[var(--text-primary)]">{empresaNombre}</span> pide tu disponibilidad
+          </p>
+          <p className="mt-0.5 text-center text-[13px] text-[var(--text-tertiary)]">
             {oficio} · Marca los días en que puedes trabajar este mes
           </p>
 
