@@ -3,7 +3,7 @@
 // usa IA, y no es un marketplace/bolsa de trabajo — es la libreta privada del dueño.
 
 const ACTUALIZADO = '6 de septiembre de 2026';
-const CONTACTO = 'josskgp@gmail.com';
+const CONTACTO = 'reclamos@jornivo.app';
 
 export default function TerminosPage() {
   return (

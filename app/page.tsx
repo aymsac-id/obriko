@@ -199,7 +199,7 @@ export default function LandingJornivo() {
       <FooterLegal
         appName=""
         logo={<BrandLockup size={26} />}
-        soporteEmail="josskgp@gmail.com"
+        soporteEmail="reclamos@jornivo.app"
         enlaces={[
           { label: 'Privacidad', href: '/privacidad' },
           { label: 'Términos y Condiciones', href: '/terminos' },

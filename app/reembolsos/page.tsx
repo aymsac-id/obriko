@@ -4,7 +4,7 @@
 // Hotmart, alineada con la garantía real configurada en el panel de Hotmart (18-VENTA-HOTMART.md).
 
 const ACTUALIZADO = '6 de septiembre de 2026';
-const CONTACTO = 'josskgp@gmail.com';
+const CONTACTO = 'reclamos@jornivo.app';
 
 export default function ReembolsosPage() {
   return (

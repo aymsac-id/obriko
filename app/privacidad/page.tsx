@@ -5,7 +5,7 @@
 // se avisa por correo a las cuentas activas (no en silencio).
 
 const ACTUALIZADO = '6 de septiembre de 2026';
-const CONTACTO = 'josskgp@gmail.com';
+const CONTACTO = 'reclamos@jornivo.app';
 
 export default function PrivacidadPage() {
   return (
