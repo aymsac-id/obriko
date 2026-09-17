@@ -62,15 +62,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'stale' }, { status: 400 });
   }
 
-  // 4. Datos del evento.
+  // 4. Datos del evento. La forma real varía por tipo de evento: una compra trae `data.buyer`,
+  //    pero una cancelación/reembolso de suscripción trae `data.subscriber` directo (sin envolver
+  //    en `data.subscription`) — confirmado con el payload real de Hotmart, no un placeholder.
   const event = String(payload.event ?? '');
   const nuevoEstado = estadoParaEvento(event);
-  const eventId = String(
-    payload.id ?? payload.event_id ?? purchase.transaction ?? `${event}:${(data.buyer as Record<string, unknown> | undefined)?.email ?? ''}:${ts}`
-  );
-  const email = (data.buyer as Record<string, unknown> | undefined)?.email as string | undefined;
-  const subscriberCode = ((data.subscription as Record<string, unknown> | undefined)?.subscriber as Record<string, unknown> | undefined)
-    ?.code as string | undefined;
+  const buyer = data.buyer as Record<string, unknown> | undefined;
+  const subscriber =
+    (data.subscriber as Record<string, unknown> | undefined) ??
+    ((data.subscription as Record<string, unknown> | undefined)?.subscriber as Record<string, unknown> | undefined);
+  const email = (buyer?.email as string | undefined) ?? (subscriber?.email as string | undefined);
+  const subscriberCode = subscriber?.code as string | undefined;
+  const eventId = String(payload.id ?? payload.event_id ?? purchase.transaction ?? `${event}:${email ?? ''}:${ts}`);
 
   if (!nuevoEstado) {
     // Evento que no nos interesa (ej. SWITCH_PLAN, todavía sin manejar — Jornivo solo tiene 1
