@@ -9,6 +9,8 @@ import { createClient } from '@supabase/supabase-js';
 import crypto from 'node:crypto';
 import { verifyHotmart } from '@/lib/hotmart-verify';
 import { estadoParaEvento } from '@/lib/hotmart-fsm';
+import { resend, REMITENTE_TRANSACCIONAL } from '@/lib/email/resend';
+import { correoAccesoCuentaNueva, correoConfirmacionStarter } from '@/lib/email/plantillas';
 
 export const runtime = 'nodejs'; // necesita node:crypto y el raw body — no corre en Edge.
 
@@ -72,6 +74,7 @@ export async function POST(req: NextRequest) {
     (data.subscriber as Record<string, unknown> | undefined) ??
     ((data.subscription as Record<string, unknown> | undefined)?.subscriber as Record<string, unknown> | undefined);
   const email = (buyer?.email as string | undefined) ?? (subscriber?.email as string | undefined);
+  const nombre = (buyer?.name as string | undefined) ?? (subscriber?.name as string | undefined) ?? 'Hola';
   const subscriberCode = subscriber?.code as string | undefined;
   const eventId = String(payload.id ?? payload.event_id ?? purchase.transaction ?? `${event}:${email ?? ''}:${ts}`);
 
@@ -104,6 +107,57 @@ export async function POST(req: NextRequest) {
     console.error('webhook hotmart error', { event, code: error.code });
     await logSilencioso({ event_id: eventId, type: event, result: 'error' });
     return NextResponse.json({ error: 'internal' }, { status: 500 });
+  }
+
+  // Jornivo no tiene trial (FICHA-MERCADO.md §4) — 'active' es el único estado que otorga acceso.
+  const otorgaAcceso = nuevoEstado === 'active';
+
+  // Compró directo (ej. el botón "Comprar Starter" de la landing) SIN haberse registrado antes —
+  // sin esto, la persona paga y no tiene forma de entrar (18-VENTA-HOTMART.md, "ticket #1").
+  // No se reintenta apply_hotmart_event: el intento anterior YA consumió el slot de idempotencia
+  // de este event_id, un segundo llamado devolvería 'duplicate' sin aplicar nada — se actualiza
+  // la empresa directo (el trigger on_auth_user_created ya la creó en plan 'gratis' al invitar).
+  if (resultado === 'no_account' && otorgaAcceso && email) {
+    try {
+      const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+        type: 'invite',
+        email,
+        options: { data: { nombre } },
+      });
+      if (linkError || !linkData?.properties?.action_link || !linkData.user) throw linkError ?? new Error('sin action_link');
+
+      const { error: updateError } = await supabase
+        .from('empresas')
+        .update({
+          subscription_status: nuevoEstado,
+          hotmart_subscriber_code: subscriberCode ?? null,
+          first_paid_at: new Date().toISOString(),
+          plan: 'starter',
+        })
+        .eq('owner_id', linkData.user.id);
+      if (updateError) throw updateError;
+
+      const correo = correoAccesoCuentaNueva(nombre, linkData.properties.action_link);
+      await resend().emails.send({ from: REMITENTE_TRANSACCIONAL, to: email, subject: correo.asunto, html: correo.html });
+      await supabase.from('webhook_log').insert({ event_id: eventId, type: event, result: 'applied' });
+      return NextResponse.json({ received: true, result: 'applied_cuenta_nueva' });
+    } catch (err) {
+      console.error('webhook hotmart: fallo creando cuenta nueva', err);
+      await logSilencioso({ event_id: eventId, type: event, result: 'error' });
+      return NextResponse.json({ error: 'internal' }, { status: 500 });
+    }
+  }
+
+  // Cuenta que YA existía (modelo gratis→onboarding→paywall) y se acaba de activar — confirmación,
+  // no acceso (ya lo tenía). Falla silenciosa: un correo que no salió no debe hacer que Hotmart
+  // reintente un evento que SÍ se aplicó a la base de datos.
+  if (resultado === 'applied' && otorgaAcceso && email) {
+    try {
+      const correo = correoConfirmacionStarter(nombre);
+      await resend().emails.send({ from: REMITENTE_TRANSACCIONAL, to: email, subject: correo.asunto, html: correo.html });
+    } catch (err) {
+      console.error('webhook hotmart: fallo enviando confirmación (no bloqueante)', err);
+    }
   }
 
   return NextResponse.json({ received: true, result: resultado });
