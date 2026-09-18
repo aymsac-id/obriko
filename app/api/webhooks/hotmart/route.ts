@@ -138,7 +138,17 @@ export async function POST(req: NextRequest) {
       if (updateError) throw updateError;
 
       const correo = correoAccesoCuentaNueva(nombre, linkData.properties.action_link);
-      await resend().emails.send({ from: REMITENTE_TRANSACCIONAL, to: email, subject: correo.asunto, html: correo.html });
+      const { error: sendError } = await resend().emails.send({
+        from: REMITENTE_TRANSACCIONAL,
+        to: email,
+        subject: correo.asunto,
+        html: correo.html,
+      });
+      // El SDK de Resend NO tira excepción en un error de la API (dominio sin verificar, remitente
+      // inválido, etc.) — lo devuelve como dato. Sin este chequeo, un envío fallido se veía como
+      // éxito (bug real encontrado con una compra de prueba: la cuenta se creaba bien, pero el
+      // correo nunca salía y nadie se enteraba).
+      if (sendError) throw sendError;
       await supabase.from('webhook_log').insert({ event_id: eventId, type: event, result: 'applied' });
       return NextResponse.json({ received: true, result: 'applied_cuenta_nueva' });
     } catch (err) {
@@ -154,7 +164,13 @@ export async function POST(req: NextRequest) {
   if (resultado === 'applied' && otorgaAcceso && email) {
     try {
       const correo = correoConfirmacionStarter(nombre);
-      await resend().emails.send({ from: REMITENTE_TRANSACCIONAL, to: email, subject: correo.asunto, html: correo.html });
+      const { error: sendError } = await resend().emails.send({
+        from: REMITENTE_TRANSACCIONAL,
+        to: email,
+        subject: correo.asunto,
+        html: correo.html,
+      });
+      if (sendError) throw sendError;
     } catch (err) {
       console.error('webhook hotmart: fallo enviando confirmación (no bloqueante)', err);
     }
