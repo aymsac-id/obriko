@@ -51,7 +51,7 @@ export default function LandingJornivo() {
           visualPlaceholderSugerencia="captura de la búsqueda con 3-4 trabajadores disponibles ordenados por confiabilidad"
           visual={
             <img
-              src="/app-preview/buscador.png"
+              src="/app-preview/buscador.jpg"
               alt="La búsqueda de Jornivo: trabajadores disponibles ordenados por confiabilidad, con su franja semanal de disponibilidad"
               className="w-full object-cover object-top"
             />
@@ -108,7 +108,7 @@ export default function LandingJornivo() {
         tituloMarked="Tu cuadrilla, [acento]lista para hoy[/acento]"
         frames={[
           { src: '/app-preview/cuadrilla-375.png', label: 'Tu libreta importada', nombrePantalla: 'Importar cuadrilla' },
-          { src: '/app-preview/buscador.png', label: 'Quién está libre hoy', nombrePantalla: 'Buscador' },
+          { src: '/app-preview/buscador.jpg', label: 'Quién está libre hoy', nombrePantalla: 'Buscador' },
           { src: '/app-preview/disponibilidad.png', label: 'La franja semanal de cada trabajador', nombrePantalla: 'Disponibilidad' },
           { src: '/app-preview/ficha-historial.png', label: 'El historial que mejora tu búsqueda', nombrePantalla: 'Ficha y calificación' },
         ]}
