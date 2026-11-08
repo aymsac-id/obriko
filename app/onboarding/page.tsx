@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { leerEstadoOnboarding, guardarEstadoOnboarding } from '@/lib/onboarding-storage';
+import { registrarPaso } from '@/lib/medicion';
 import { Paso1Bienvenida } from '@/components/onboarding/Paso1Bienvenida';
 import { Paso2Importar } from '@/components/onboarding/Paso2Importar';
 import { Paso3Marcar } from '@/components/onboarding/Paso3Marcar';
@@ -23,6 +24,7 @@ export default function OnboardingPage() {
   const [direccion, setDireccion] = useState(1);
 
   useEffect(() => {
+    registrarPaso('onboarding_iniciado');
     const estado = leerEstadoOnboarding();
     if (estado.confiables.length > 0) setConfiables(estado.confiables);
   }, []);

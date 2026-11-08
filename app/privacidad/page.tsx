@@ -4,7 +4,7 @@
 // (app/app/ajustes/actions.ts). Se actualiza cada vez que cambie algo material — y ese cambio
 // se avisa por correo a las cuentas activas (no en silencio).
 
-const ACTUALIZADO = '6 de septiembre de 2026';
+const ACTUALIZADO = '13 de octubre de 2026';
 const CONTACTO = 'reclamos@jornivo.app';
 
 export default function PrivacidadPage() {
@@ -101,15 +101,26 @@ export default function PrivacidadPage() {
               mismo.
             </li>
             <li>
-              <strong className="text-[var(--text-primary)]">Hotmart</strong> — cuando actives un plan pago, procesará
-              tu cobro. Hoy el plan Starter NO tiene ningún cobro real activado — es gratis mientras terminamos de
-              conectar la pasarela de pago.
+              <strong className="text-[var(--text-primary)]">Hotmart</strong> — procesa el cobro cuando contratas el plan
+              Starter. Tus datos de pago los maneja Hotmart directamente; Jornivo nunca ve ni guarda tu tarjeta.
+            </li>
+            <li>
+              <strong className="text-[var(--text-primary)]">Resend</strong> — envía los correos sobre tu plan (acceso
+              después de comprar, avisos de pago y de cancelación).
             </li>
           </ul>
           <p className="mt-3">
             No usamos herramientas de publicidad ni de analítica de terceros (como Google Analytics o Meta Pixel) hoy.
             Si eso cambiara en el futuro, actualizaríamos esta página y te lo avisaríamos por correo antes de
             activarlo — nunca en silencio.
+          </p>
+          <p className="mt-3">
+            Lo que sí hacemos, con nuestra propia base de datos y sin compartirlo con nadie, es contar de forma anónima
+            los pasos que se recorren en la página (visitar, empezar el recorrido de inicio, ver los planes,
+            registrarse, abrir la página de pago) y de dónde llegó la visita (por ejemplo, un enlace compartido en
+            WhatsApp). Para no contar dos veces a la misma persona, tu navegador guarda un identificador aleatorio que
+            no contiene tu nombre, tu correo ni tu cuenta. Puedes borrarlo cuando quieras limpiando los datos del sitio
+            en tu navegador.
           </p>
         </section>
 

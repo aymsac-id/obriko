@@ -8,6 +8,7 @@
 // la card recomendada (el uso canónico de la técnica) · checkmarks custom.
 // El destino de los CTAs sigue al MODELO de 02C (checkout vs /onboarding).
 
+import type { MouseEvent } from 'react';
 import { motion } from 'motion/react';
 import { Star } from 'lucide-react';
 import { CheckCustom, CtaButton, Hairline, Kicker, SectionShell, useReveal, VIEWPORT_ONCE } from './ui';
@@ -22,6 +23,8 @@ export interface PlanOferta {
   descomposicionDia?: string;
   ctaLabel: string;
   ctaHref: string;
+  /** Opcional: p. ej. medir el clic antes de salir a la página de pago. */
+  onCtaClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
   /** 4-6 features en lenguaje de RESULTADO, máx 12 palabras c/u. */
   features: string[];
 }
@@ -165,7 +168,7 @@ export function Oferta({
                 </div>
                 <Features items={anual.features} origen="Oferta → anual" />
                 <div className="mt-6">
-                  <CtaButton href={anual.ctaHref} fullMobile>
+                  <CtaButton href={anual.ctaHref} onClick={anual.onCtaClick} fullMobile>
                     {anual.ctaLabel}
                   </CtaButton>
                 </div>
@@ -189,6 +192,7 @@ export function Oferta({
             <motion.a
               whileTap={{ scale: 0.97 }}
               href={mensual.ctaHref}
+              onClick={mensual.onCtaClick}
               className="mt-6 flex h-12 w-full items-center justify-center rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] text-[16px] font-semibold text-[var(--accent)] transition-colors duration-150 hover:bg-[var(--chip-bg)] [touch-action:manipulation]"
             >
               {mensual.ctaLabel}

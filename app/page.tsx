@@ -6,7 +6,9 @@
 // Modelo 2 (onboarding-first/freemium, ESTADO.md): el CTA lleva a /onboarding, nunca a
 // un checkout — el pago se decide más adelante en el paywall in-app (Sesión 4).
 
+import { useEffect, type MouseEvent } from 'react';
 import { Clock, PhoneCall, UserX, Users } from 'lucide-react';
+import { registrarPaso } from '@/lib/medicion';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
 import { Agitacion } from '@/components/landing/Agitacion';
@@ -28,7 +30,19 @@ const CTA_LABEL = 'Armar mi cuadrilla gratis';
 // vuelta a /onboarding — cero pantalla rota.
 const CHECKOUT_STARTER = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL_MENSUAL || CTA_HREF;
 
+/** Cuenta el clic hacia la página de pago de Hotmart antes de salir (salir cancela el envío). */
+async function medirYIrAlCheckout(e: MouseEvent<HTMLAnchorElement>) {
+  if (CHECKOUT_STARTER === CTA_HREF) return;
+  e.preventDefault();
+  await Promise.race([registrarPaso('checkout_abierto'), new Promise((r) => setTimeout(r, 800))]);
+  window.location.href = CHECKOUT_STARTER;
+}
+
 export default function LandingJornivo() {
+  useEffect(() => {
+    registrarPaso('visita_landing');
+  }, []);
+
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
       {/* 1. HERO — fondo real dado por el usuario (obra + circuito), detrás del contenido del kit */}
@@ -127,6 +141,7 @@ export default function LandingJornivo() {
           ahorro: 'Hasta 50 trabajadores + búsqueda ilimitada',
           ctaLabel: 'Comprar Starter ahora',
           ctaHref: CHECKOUT_STARTER,
+          onCtaClick: medirYIrAlCheckout,
           features: [
             'Hasta 50 trabajadores en tu libreta privada',
             'Búsqueda con filtros por oficio y confiabilidad',

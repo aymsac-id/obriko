@@ -28,6 +28,7 @@ import { motion } from 'motion/react';
 import { Lock, Sparkles, type LucideIcon } from 'lucide-react';
 import { guardarEstadoOnboarding } from '@/lib/onboarding-storage';
 import { crearClienteSupabase } from '@/lib/supabase/client';
+import { registrarPaso } from '@/lib/medicion';
 import { FunnelHeader, PasoShell, PrimaryCta, SecondaryCta, StepFooter, useStepReveal } from '@/components/onboarding/ui';
 import { CheckCustom, Hairline, IconChip } from '@/components/landing/ui';
 import { MarkedCopy } from '@/components/landing/MarkedCopy';
@@ -47,12 +48,13 @@ export default function PaywallPage() {
   const { contenedor, item } = useStepReveal(0.08);
 
   useEffect(() => {
+    registrarPaso('paywall_visto');
     crearClienteSupabase()
       .auth.getUser()
       .then(({ data }) => setEmailUsuario(data.user?.email ?? null));
   }, []);
 
-  function continuar() {
+  async function continuar() {
     const checkoutBase =
       ciclo === 'anual'
         ? process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL_ANUAL
@@ -62,6 +64,8 @@ export default function PaywallPage() {
     if (plan === 'starter' && checkoutBase && emailUsuario) {
       const url = new URL(checkoutBase);
       url.searchParams.set('email', emailUsuario);
+      // Se espera al registro (máx. 800 ms) porque salir de la página cancelaría el envío.
+      await Promise.race([registrarPaso('checkout_abierto'), new Promise((r) => setTimeout(r, 800))]);
       window.location.href = url.toString();
       return;
     }

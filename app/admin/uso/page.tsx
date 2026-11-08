@@ -3,7 +3,7 @@
 // mostrará "Sin datos" hasta que pase el tiempo — nunca un porcentaje inventado.
 
 import { crearClienteSupabaseServidor } from '@/lib/supabase/server';
-import { getCuentasPorDia, getResumenEventos, getResumenNegocio, getRetencion } from '@/lib/data/admin';
+import { getCuentasPorDia, getEmbudo, getResumenEventos, getResumenNegocio, getRetencion } from '@/lib/data/admin';
 import StatCard from '@/components/admin/StatCard';
 import TendenciaCuentas from '@/components/admin/TendenciaCuentas';
 
@@ -14,7 +14,14 @@ const ETIQUETA_EVENTO: Record<string, string> = {
   disponibilidad_marcada_publica: 'Disponibilidad marcada (enlace del trabajador)',
   disponibilidad_marcada_manual: 'Disponibilidad marcada (a mano por el dueño)',
   sesion_abierta: 'Sesiones abiertas',
+  visita_landing: 'Visitas a la página de ventas',
+  onboarding_iniciado: 'Recorridos de inicio empezados',
+  registro_enviado: 'Registros enviados',
+  paywall_visto: 'Pantalla de planes vista',
+  checkout_abierto: 'Página de pago abierta',
 };
+
+const ETIQUETA_ORIGEN: Record<string, string> = { directo: 'Directo (escribió la dirección o enlace sin etiqueta)' };
 
 function tarjetaRetencion(etiqueta: string, r: { cohorteSize: number; retenidos: number } | null) {
   if (!r) return <StatCard etiqueta={etiqueta} valor="" sinDatos />;
@@ -24,7 +31,8 @@ function tarjetaRetencion(etiqueta: string, r: { cohorteSize: number; retenidos:
 
 export default async function AdminUsoPage() {
   const supabase = await crearClienteSupabaseServidor();
-  const [resumen, eventos, serie, d1, d7, d30] = await Promise.all([
+  const [embudo, resumen, eventos, serie, d1, d7, d30] = await Promise.all([
+    getEmbudo(supabase, 30),
     getResumenNegocio(supabase),
     getResumenEventos(supabase, 30),
     getCuentasPorDia(supabase, 30),
@@ -41,6 +49,72 @@ export default async function AdminUsoPage() {
       <div>
         <h1 className="text-[24px] font-bold [font-family:var(--font-display)]">Uso</h1>
         <p className="text-[13px] text-[var(--text-secondary)]">¿La gente usa Jornivo de verdad, y vuelve?</p>
+      </div>
+
+      <div>
+        <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)]">
+          Camino de venta — últimos 30 días
+        </p>
+        {embudo.pasos[0].total === 0 ? (
+          <p className="rounded-[var(--radius-card)] bg-[var(--surface)] p-4 text-[13px] text-[var(--text-tertiary)]">
+            Sin visitas registradas todavía. Se cuentan desde que se instaló la medición.
+          </p>
+        ) : (
+          <ol className="flex flex-col gap-3 rounded-[var(--radius-card)] bg-[var(--surface)] p-4">
+            {embudo.pasos.map((paso, i) => {
+              const base = embudo.pasos[0].total;
+              const anterior = i > 0 ? embudo.pasos[i - 1].total : null;
+              return (
+                <li key={paso.clave}>
+                  <div className="flex items-baseline justify-between gap-3 text-[13px]">
+                    <span className="text-[var(--text-secondary)]">{paso.etiqueta}</span>
+                    <span className="shrink-0 font-semibold tabular-nums">
+                      {paso.total}
+                      {anterior ? (
+                        <span className="ml-1.5 text-[12px] font-normal text-[var(--text-tertiary)]">
+                          {Math.round((paso.total / anterior) * 100)}% del paso anterior
+                        </span>
+                      ) : null}
+                    </span>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-[color-mix(in_oklab,var(--text-tertiary)_18%,transparent)]">
+                    <div
+                      className="h-full rounded-full bg-[var(--accent)]"
+                      style={{ width: `${Math.min(100, (paso.total / base) * 100)}%` }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+        <p className="mt-2 text-[12px] text-[var(--text-tertiary)]">
+          Visitantes únicos por navegador. Cuentas nuevas y primeros pagos son datos reales de la base.
+        </p>
+      </div>
+
+      <div>
+        <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)]">
+          De dónde llegan — últimos 30 días
+        </p>
+        {embudo.origenes.length === 0 ? (
+          <p className="text-[13px] text-[var(--text-tertiary)]">Sin datos todavía.</p>
+        ) : (
+          <div className="flex flex-col gap-1.5 rounded-[var(--radius-card)] bg-[var(--surface)] p-2">
+            {embudo.origenes.map((o) => (
+              <div key={o.origen} className="flex items-center justify-between gap-3 px-2 py-1.5 text-[13px]">
+                <span className="min-w-0 truncate text-[var(--text-secondary)]">{ETIQUETA_ORIGEN[o.origen] ?? o.origen}</span>
+                <span className="shrink-0 tabular-nums">
+                  <span className="font-semibold">{o.visitantes}</span>
+                  <span className="text-[var(--text-tertiary)]"> visitas · {o.registros} registros</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+        <p className="mt-2 text-[12px] text-[var(--text-tertiary)]">
+          Para saber qué grupo funciona, comparte el enlace con una etiqueta: jornivo.app/?de=nombre-del-grupo
+        </p>
       </div>
 
       <div>

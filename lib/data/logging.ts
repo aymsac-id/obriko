@@ -9,7 +9,13 @@ export type TipoEvento =
   | 'evaluacion_registrada'
   | 'disponibilidad_marcada_publica'
   | 'disponibilidad_marcada_manual'
-  | 'sesion_abierta';
+  | 'sesion_abierta'
+  // Camino de venta (lib/medicion.ts) — anónimos, sin empresa todavía.
+  | 'visita_landing'
+  | 'onboarding_iniciado'
+  | 'registro_enviado'
+  | 'paywall_visto'
+  | 'checkout_abierto';
 
 export async function logEvento(tipo: TipoEvento, empresaId: string | null, metadata: Record<string, unknown> = {}) {
   try {

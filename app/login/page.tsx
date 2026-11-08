@@ -13,6 +13,7 @@ import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import { FunnelHeader, PrimaryCta, StepFooter, useStepReveal } from '@/components/onboarding/ui';
 import { crearClienteSupabase } from '@/lib/supabase/client';
 import { logEvento } from '@/lib/data/logging';
+import { registrarPaso } from '@/lib/medicion';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -64,6 +65,8 @@ export default function LoginPage() {
       );
       return;
     }
+    if (modo === 'crear') registrarPaso('registro_enviado');
+
     if (modo === 'crear' && !data.session) {
       // Supabase pide confirmar el correo antes de abrir sesión — no hay forma de entrar a
       // /app todavía (el middleware lo rebotaría). Al confirmar y volver a "Entrar" sí habrá

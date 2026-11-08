@@ -167,3 +167,70 @@ export async function getTotalErrores(supabase: SupabaseClient, dias: number): P
   const { count } = await supabase.from('error_log').select('id', { count: 'exact', head: true }).gte('creado_en', desde);
   return count ?? 0;
 }
+
+export interface PasoEmbudoAdmin {
+  clave: string;
+  etiqueta: string;
+  /** Visitantes únicos (o cuentas/pagos reales en los dos últimos pasos). */
+  total: number;
+}
+
+export interface OrigenVisitas {
+  origen: string;
+  visitantes: number;
+  /** Cuántos de esos visitantes llegaron a registrarse. */
+  registros: number;
+}
+
+export interface Embudo {
+  pasos: PasoEmbudoAdmin[];
+  origenes: OrigenVisitas[];
+}
+
+const PASOS_EMBUDO: { clave: string; etiqueta: string }[] = [
+  { clave: 'visita_landing', etiqueta: 'Visitaron la página de ventas' },
+  { clave: 'onboarding_iniciado', etiqueta: 'Empezaron el recorrido de inicio' },
+  { clave: 'paywall_visto', etiqueta: 'Vieron los planes' },
+  { clave: 'registro_enviado', etiqueta: 'Se registraron' },
+  { clave: 'checkout_abierto', etiqueta: 'Abrieron la página de pago' },
+];
+
+/**
+ * Camino de venta de los últimos N días (lib/medicion.ts): visitantes ÚNICOS por paso, por el
+ * identificador anónimo del navegador, contados en la base (RPC admin_embudo, migración 0013);
+ * cuentas y primeros pagos salen de empresas (dato real).
+ */
+export async function getEmbudo(supabase: SupabaseClient, dias = 30): Promise<Embudo> {
+  const desde = new Date(Date.now() - dias * 86_400_000).toISOString();
+
+  const [filas, cuentas, pagos] = await Promise.all([
+    supabase.rpc('admin_embudo', { p_desde: desde }),
+    supabase.from('empresas').select('id', { count: 'exact', head: true }).gte('creado_en', desde),
+    supabase.from('empresas').select('id', { count: 'exact', head: true }).gte('first_paid_at', desde),
+  ]);
+  if (filas.error) throw filas.error;
+  const datos = (filas.data ?? []) as { tipo: string; origen: string; visitantes: number }[];
+
+  // Cada visitante tiene un solo origen, así que sumar por origen da el total exacto del paso.
+  const totalDe = (tipo: string) =>
+    datos.filter((f) => f.tipo === tipo).reduce((suma, f) => suma + Number(f.visitantes), 0);
+
+  const pasos: PasoEmbudoAdmin[] = [
+    ...PASOS_EMBUDO.map((p) => ({ ...p, total: totalDe(p.clave) })),
+    { clave: 'cuentas', etiqueta: 'Cuentas nuevas', total: cuentas.count ?? 0 },
+    { clave: 'pagos', etiqueta: 'Primeros pagos', total: pagos.count ?? 0 },
+  ];
+
+  const origenes = datos
+    .filter((f) => f.tipo === 'visita_landing')
+    .map((f) => ({
+      origen: f.origen,
+      visitantes: Number(f.visitantes),
+      registros: Number(
+        datos.find((r) => r.tipo === 'registro_enviado' && r.origen === f.origen)?.visitantes ?? 0
+      ),
+    }))
+    .sort((a, b) => b.visitantes - a.visitantes);
+
+  return { pasos, origenes };
+}
